@@ -40,5 +40,10 @@ version: 0.0.15
 
 ** Data scraping
    [List of scientists]{https://en.wikipedia.org/wiki/List_of_computer_scientists}
-   - [ ] Search for wikipedia scraping
-   - [ ] Search for web scraping in python
+   - [x] Search for wikipedia scraping
+   Wikipedia-specific libraries don't have all the features needed
+   - [x] Get list of links for wiki pages
+   - [-] Search for web scraping in python
+   Propably will use beatiful soup
+   -Will download the html of the first page to get going-
+   Just got all the links using developer tools in the browser
