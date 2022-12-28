@@ -1,0 +1,44 @@
+@document.meta
+title: treescience
+description: Multidimentional data structures class project
+authors: dabbing
+categories: ceid, software
+created: 2022-12-28
+updated: 2022-12-28
+version: 0.0.15
+@end
+
+* Tree of scientists
+  [Project description]{@ ProjectDefinitionNddata.pdf}
+  Deadline: around finals period
+  I chose project 1
+** Problem definition
+   Create multi-dimentional index structures for data of the form
+   (surname: String, awards: Int, education: /text-vector/)
+   scraped from [List of scientists]
+   to be used for range queries on the first two fields
+   and /LSH/ grouping on the last.
+*** Structures
+    - k-d trees
+    - Quad trees
+    - Range trees
+    - R trees
+*** Example
+    Scientists with >60% simularity in education with names starting
+    with \[A..G\] and have > 4 awards.
+
+** Plan
+   - [ ] Scap data with python
+   - [ ] Write _summary_ for the types of data structures
+   - [ ] Dump data in csv
+   - [ ] Turn education to /LSH/ hashes
+   - [ ] Look for haskell data structure libraries
+   - [ ] Implement data structures
+   - [ ] Measure complexity for each structure
+   Complexity here means ammount of operations/nodes accessed
+   - [ ] Write report
+
+** Data scraping
+   [List of scientists]{https://en.wikipedia.org/wiki/List_of_computer_scientists}
+   - [ ] Search for wikipedia scraping
+   - [ ] Search for web scraping in python
