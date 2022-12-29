@@ -74,5 +74,9 @@ version: 0.0.15
     if high>=data search right
     @end
 *** Quad tree
+    Split to quadrands each node. If a quadrand has over 4 points split again.
+    Nodes hold the values for simplicity.
+    Pick the node that minimizes spread between number of items in the quadrands.
+    Range query same as kd tree, few more cases.
 *** Range tree
 *** R tree
