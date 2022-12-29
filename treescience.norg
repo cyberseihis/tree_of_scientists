@@ -60,5 +60,5 @@ version: 0.0.15
    - [x] Remove partial results
    - [x] Formating
    - [x] Remove citations
-   - [ ] Turn to csv
+   - [x] Turn to csv
    But text may contain commas though
