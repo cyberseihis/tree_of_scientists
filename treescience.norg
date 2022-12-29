@@ -55,7 +55,7 @@ version: 0.0.15
    By education I understand the 'Education' section specifically.
    Do education seperately since it will be vectorised anyways
 ** Data cleanup
-   - [ ] Merge name/award files
+   - [x] Merge name/award files
    - [ ] Merge with education file
    - [ ] Remove partial results
    - [ ] Formating
