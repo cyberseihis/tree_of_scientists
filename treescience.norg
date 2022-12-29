@@ -28,7 +28,8 @@ version: 0.0.15
     with \[A..G\] and have > 4 awards.
 
 ** Plan
-   - [ ] Scap data with python
+   - [x] Scap data with python
+   - [-] Cleanup data
    - [ ] Write _summary_ for the types of data structures
    - [ ] Dump data in csv
    - [ ] Turn education to /LSH/ hashes
@@ -50,6 +51,11 @@ version: 0.0.15
    - [x] Scrap surname
    - [x] Scrap ammount of awards
    - [x] Write scrap script for education
-   - [ ] Scrap education texts
+   - [x] Scrap education texts
    By education I understand the 'Education' section specifically.
    Do education seperately since it will be vectorised anyways
+** Data cleanup
+   - [ ] Merge name/award files
+   - [ ] Merge with education file
+   - [ ] Remove partial results
+   - [ ] Formating
