@@ -79,4 +79,8 @@ version: 0.0.15
     Pick the node that minimizes spread between number of items in the quadrands.
     Range query same as kd tree, few more cases.
 *** Range tree
+    A 1d balanced binary tree +does balanced just mean split at median+,
+    where each node holds another btree for the other dimension.
+    Range query: like kd tree(for same dimension each time).
+    "Reporting" in the first dimension means doing the query in the second of that node.
 *** R tree
