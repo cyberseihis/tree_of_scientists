@@ -29,8 +29,8 @@ version: 0.0.15
 
 ** Plan
    - [x] Scap data with python
-   - [-] Cleanup data
-   - [ ] Write _summary_ for the types of data structures
+   - [x] Cleanup data
+   - [-] Write _summary_ for the types of data structures
    - [ ] Dump data in csv
    - [ ] Turn education to /LSH/ hashes
    - [ ] Look for haskell data structure libraries
@@ -62,3 +62,17 @@ version: 0.0.15
    - [x] Remove citations
    - [x] Turn to csv
    But text may contain commas though
+** Structure summaries
+*** K-d tree
+    Compare value with node, alternating dimension each level.
+    Split at *median* since all values are available from start.
+    Store values at nodes for easier ranger search.
+    Range query:
+    @code
+    if in_range then print
+    if low<=data search left
+    if high>=data search right
+    @end
+*** Quad tree
+*** Range tree
+*** R tree
