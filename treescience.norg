@@ -58,4 +58,7 @@ version: 0.0.15
    - [x] Merge name/award files
    - [x] Merge with education file
    - [x] Remove partial results
-   - [ ] Formating
+   - [x] Formating
+   - [ ] Remove citations
+   - [ ] Turn to csv
+   But text may contain commas though
