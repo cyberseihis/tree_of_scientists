@@ -57,5 +57,5 @@ version: 0.0.15
 ** Data cleanup
    - [x] Merge name/award files
    - [x] Merge with education file
-   - [ ] Remove partial results
+   - [x] Remove partial results
    - [ ] Formating
