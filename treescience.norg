@@ -4,7 +4,7 @@ description: Multidimentional data structures class project
 authors: dabbing
 categories: ceid, software
 created: 2022-12-28
-updated: 2022-12-28
+updated: 2022-12-29
 version: 0.0.15
 @end
 
@@ -49,6 +49,7 @@ version: 0.0.15
    Just got all the links using developer tools in the browser
    - [x] Scrap surname
    - [x] Scrap ammount of awards
-   - [=] Scrap education
-   What exactly do I get off the page here?
+   - [x] Write scrap script for education
+   - [ ] Scrap education texts
+   By education I understand the 'Education' section specifically.
    Do education seperately since it will be vectorised anyways
