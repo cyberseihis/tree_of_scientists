@@ -30,11 +30,13 @@ version: 0.0.15
 ** Plan
    - [x] Scap data with python
    - [x] Cleanup data
-   - [-] Write _summary_ for the types of data structures
+   - [x] Write _summary_ for the types of data structures
    - [x] Dump data in csv
+   - [x] Look for haskell data structure libraries
+     I will just write them from scratch, libraries are more general than I would like
+   - [ ] Turn names to ints for ease
+   - [-] Implement data structures
    - [ ] Turn education to /LSH/ hashes
-   - [ ] Look for haskell data structure libraries
-   - [ ] Implement data structures
    - [ ] Measure complexity for each structure
    Complexity here means ammount of operations/nodes accessed
    - [ ] Write report
@@ -88,3 +90,8 @@ version: 0.0.15
     To construct put all points in an MBR and recursively split.
     Splitting: Pick median in dimention with biggest spread
     Range query: If search range and node range intersect search node
+** Structure implemenations
+*** Kd Tree
+    - [x] Write datatype
+    - [x] Write constructor
+    - [ ] Write range query
