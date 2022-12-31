@@ -4,12 +4,12 @@ description: Multidimentional data structures class project
 authors: dabbing
 categories: ceid, software
 created: 2022-12-28
-updated: 2022-12-29
+updated: 2022-12-31
 version: 0.0.15
 @end
 
 * Tree of scientists
-  [Project description]{@ ProjectDefinitionNddata.pdf}
+  [Project description]{/ ProjectDefinitionNddata.pdf}
   Deadline: around finals period
   I chose project 1
 ** Problem definition
@@ -31,7 +31,7 @@ version: 0.0.15
    - [x] Scap data with python
    - [x] Cleanup data
    - [-] Write _summary_ for the types of data structures
-   - [ ] Dump data in csv
+   - [x] Dump data in csv
    - [ ] Turn education to /LSH/ hashes
    - [ ] Look for haskell data structure libraries
    - [ ] Implement data structures
@@ -84,3 +84,7 @@ version: 0.0.15
     Range query: like kd tree(for same dimension each time).
     "Reporting" in the first dimension means doing the query in the second of that node.
 *** R tree
+    Stores *Minimum Bounding Boxes* with given fanout.
+    To construct put all points in an MBR and recursively split.
+    Splitting: Pick median in dimention with biggest spread
+    Range query: If search range and node range intersect search node
