@@ -27,6 +27,11 @@ prop_model_filter pl ph xs = smaller pl ph ==>
         zs = filter (isCovered pl ph) xs
     in samesame ys zs
 
+prop_only_self xs = not (null xs) ==>
+    let x = head xs
+        ys = map normaliseToX . rangeKd x x . makeKd $ xs
+    in not (null ys) && all (==x) ys
+
 samesame xs ys = null (xs \\ ys) && null (ys \\ xs)
 
 smaller :: Point -> Point -> Bool

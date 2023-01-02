@@ -100,4 +100,4 @@ version: 0.0.15
    - [x] All points in result of query are inside range points
    - [x] Querying with minimum and maximum values returns all points
    - [x] filter with is in range function has the same result as range query after making the tree
-   - [ ] Querry with both range points set to a node point returns only copies of that point
+   - [x] Querry with both range points set to a node point returns only copies of that point
