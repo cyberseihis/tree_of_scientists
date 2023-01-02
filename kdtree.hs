@@ -24,12 +24,16 @@ rangeKd :: Point -> Point -> Kd -> [Point]
 rangeKd _ _ Kempty = []
 rangeKd lowp highp (Kd point kd1 kd2) =
     let le = lowp <= point
-    in undefined
-    
+        ge = point <= highp
+        above = if ge then rangeKd (other lowp) (other highp) kd2 else []
+        below = if le then rangeKd (other lowp) (other highp) kd1 else []
+        -- Should check if it's inside in both dimensions
+        mid = [point | isCovered lowp highp point]
+    in concat [below, mid, above]
 
-xOry :: Bool -> Point -> Int
-xOry True = x
-xOry False = y
+isCovered low high point =
+    low <= point && point <= high &&
+    other low <= other point && other point <= other high
 
 splitInHalf :: [a] -> ([a], [a])
 splitInHalf = uncurry splitAt . ((`div`2).length &&& id)

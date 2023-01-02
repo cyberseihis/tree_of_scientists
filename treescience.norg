@@ -95,4 +95,4 @@ version: 0.0.15
     - [x] Write datatype
     - [x] Write constructor
       Using sets doesn't make sense since there are multiples in each dimension
-    - [-] Write range query
+    - [x] Write range query
