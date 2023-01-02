@@ -1,20 +1,31 @@
-import Data.List (sortOn)
+import Data.List (sortOn, sort)
 import Control.Arrow (Arrow((&&&)))
 
-data Kd = Kempty | Kx Point Kd Kd | Ky Point Kd Kd deriving (Eq, Show, Ord)
+type Axis = Bool
+data Kd = Kempty | Kd Point Kd Kd deriving (Eq, Show)
 
-data Point = Point {x :: Int, y :: Int} deriving (Eq, Show, Ord)
+data Point = Pointx {x :: Int, y :: Int} | Pointy {x :: Int, y :: Int} deriving (Eq, Show)
 
--- Maybe using sets would be more convinient?
--- But how would I take the median
-makeKd _ [] = Kempty
-makeKd dim points = Kx median (subKd less) (subKd more)
+instance Ord Point where
+    (Pointx x _) <= (Pointx z _) = x <= z
+    (Pointy _ y) <= (Pointy _ z) = y <= z
+
+other (Pointx x y) = Pointy x y
+other (Pointy x y) = Pointx x y
+
+makeKd [] = Kempty
+makeKd points = Kd median (subKd less) (subKd more)
   where
-    (below, median : above) = splitInHalf . sortOn axis $ points
-    axis = xOry dim
-    thres = axis median
-    (less,more) = break ((>thres).axis) (below++above)
-    subKd = makeKd (not dim)
+    (below, median : above) = splitInHalf . sort $ points
+    (less,more) = break (>median) (below++above)
+    subKd = makeKd . map other
+
+rangeKd :: Point -> Point -> Kd -> [Point]
+rangeKd _ _ Kempty = []
+rangeKd lowp highp (Kd point kd1 kd2) =
+    let le = lowp <= point
+    in undefined
+    
 
 xOry :: Bool -> Point -> Int
 xOry True = x

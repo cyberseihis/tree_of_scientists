@@ -4,7 +4,7 @@ description: Multidimentional data structures class project
 authors: dabbing
 categories: ceid, software
 created: 2022-12-28
-updated: 2022-12-31
+updated: 2023-01-02
 version: 0.0.15
 @end
 
@@ -94,4 +94,5 @@ version: 0.0.15
 *** Kd Tree
     - [x] Write datatype
     - [x] Write constructor
-    - [ ] Write range query
+      Using sets doesn't make sense since there are multiples in each dimension
+    - [-] Write range query
