@@ -1,0 +1,29 @@
+cabal-version:      2.4
+name:               tree-of-scientists
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis: Implementarion of data structures for range querries
+
+-- A longer description of the package.
+-- description: Project for multidimentional data structures class
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- The license under which the package is released.
+-- license: GPLv3
+author:             cyberseihis
+maintainer:         mcraftdm@gmail.com
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+library
+    -- exposed-modules: Kdtree
+    other-modules: Kdtree, KdTest
+    build-depends:    
+    	base ^>=4.15.1.0, containers, QuickCheck
+    default-language: Haskell2010

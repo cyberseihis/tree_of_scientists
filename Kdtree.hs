@@ -1,3 +1,4 @@
+module Kdtree  where
 import Data.List (sortOn, sort)
 import Control.Arrow (Arrow((&&&)))
 
@@ -23,11 +24,9 @@ makeKd points = Kd median (subKd less) (subKd more)
 rangeKd :: Point -> Point -> Kd -> [Point]
 rangeKd _ _ Kempty = []
 rangeKd lowp highp (Kd point kd1 kd2) =
-    let le = lowp <= point
-        ge = point <= highp
-        above = if ge then rangeKd (other lowp) (other highp) kd2 else []
-        below = if le then rangeKd (other lowp) (other highp) kd1 else []
-        -- Should check if it's inside in both dimensions
+    let nextQuerry = rangeKd (other lowp) (other highp)
+        above = if point <= highp then nextQuerry kd2 else []
+        below = if lowp <= point then nextQuerry kd1 else []
         mid = [point | isCovered lowp highp point]
     in concat [below, mid, above]
 
