@@ -22,6 +22,11 @@ prop_all_minmax xs =
         ys = map normaliseToX $ rangeKd minPoint maxPoint kdt
     in samesame xs ys
 
+prop_model_filter pl ph xs = smaller pl ph ==>
+    let ys = map normaliseToX . rangeKd pl ph . makeKd $ xs
+        zs = filter (isCovered pl ph) xs
+    in samesame ys zs
+
 samesame xs ys = null (xs \\ ys) && null (ys \\ xs)
 
 smaller :: Point -> Point -> Bool
