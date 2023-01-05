@@ -4,7 +4,7 @@ description: Multidimentional data structures class project
 authors: dabbing
 categories: ceid, software
 created: 2022-12-28
-updated: 2023-01-04
+updated: 2023-01-05
 version: 0.0.15
 @end
 
@@ -97,9 +97,9 @@ version: 0.0.15
       Using sets doesn't make sense since there are multiples in each dimension
     - [x] Write range query
 *** Quad Tree
-    - [-] Write datatype
-    - [ ] Write constructor
-    - [ ] Write range query
+    - [x] Write datatype
+    - [x] Write constructor
+    - [x] Write range query
 ** Tests
    - [x] All points in result of query are inside range points
    - [x] Querying with minimum and maximum values returns all points
