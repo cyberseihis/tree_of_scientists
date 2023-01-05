@@ -2,9 +2,11 @@ module Quad where
 import Kdtree
 import Data.List.NonEmpty (groupAllWith, toList)
 import Data.Map.Strict ( Map )
-import Control.Arrow (Arrow((&&&), first), (>>>))
+import Control.Arrow (Arrow((&&&), first, second), (>>>))
 import qualified Data.Map as Map
 import qualified Data.List as List
+import Data.Ord (comparing)
+import Data.Foldable (maximumBy)
 
 data Qtree = Qempty | Qtree Point (Map Quad Qtree) deriving (Eq,Show)
 type Quad = (Bool,Bool)
@@ -29,9 +31,13 @@ spreadAround x =
     uncurry (-)
 
 makeQtree :: [Point] -> Qtree
-makeQtree points =
-    let posibleSpilts = removeEach points
-        
-    in undefined
+makeQtree [] = Qempty
+makeQtree points = mkQ points
+mkQ =
+    removeEach >>>
+    maximumBy (comparing $ uncurry spreadAround) >>>
+    (fst &&& uncurry splitAround) >>>
+    second (Map.map makeQtree) >>>
+    uncurry Qtree
 
 removeEach xs = zip xs (map (`List.delete` xs) xs)
