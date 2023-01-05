@@ -1,7 +1,18 @@
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module KdTest where
 import Kdtree
 import Test.QuickCheck
 import Data.List ((\\))
+import Quad
+
+instance Rangetree Kd where
+    make = makeKd
+    querry = rangeKd
+
+instance Rangetree Qtree where
+    make = makeQtree
+    querry = rangeQt
 
 instance Arbitrary Point where
     arbitrary = do
@@ -10,27 +21,48 @@ instance Arbitrary Point where
 
 instance Arbitrary Kd where
     arbitrary = do
-        makeKd <$> arbitrary
+        make <$> arbitrary
 
-prop_all_in pl ph kdt = smaller pl ph ==>
-    all (isCovered pl ph . normaliseToX) $ rangeKd pl ph kdt
+instance Arbitrary Qtree where
+    arbitrary = do
+        make <$> arbitrary
 
-prop_all_minmax xs =
-    let minPoint = Pointx minBound minBound
-        maxPoint = Pointx maxBound maxBound
-        kdt = makeKd xs
-        ys = map normaliseToX $ rangeKd minPoint maxPoint kdt
-    in samesame xs ys
 
-prop_model_filter pl ph xs = smaller pl ph ==>
-    let ys = map normaliseToX . rangeKd pl ph . makeKd $ xs
-        zs = filter (isCovered pl ph) xs
-    in samesame ys zs
 
-prop_only_self xs = not (null xs) ==>
-    let x = head xs
-        ys = map normaliseToX . rangeKd x x . makeKd $ xs
-    in not (null ys) && all (==x) ys
+class Rangetree a where
+    make :: [Point] -> a
+    emptyTree :: a
+    emptyTree = make []
+    querry :: Point -> Point -> a -> [Point]
+    prop_all_in :: a -> Point -> Point -> [Point] -> Property
+    prop_all_in _ pl ph xs = smaller pl ph ==>
+        all (isCovered pl ph . normaliseToX) . querry pl ph $ (make xs::a)
+    prop_all_minmax :: a -> [Point] -> Bool
+    prop_all_minmax  _ xs =
+        let minPoint = Pointx minBound minBound
+            maxPoint = Pointx maxBound maxBound
+            kdt :: a= make xs
+            ys = map normaliseToX $ querry minPoint maxPoint kdt
+        in samesame xs ys
+
+    prop_model_filter :: a -> Point -> Point -> [Point] -> Property
+    prop_model_filter _ pl ph xs = smaller pl ph ==>
+        let ys = map normaliseToX . querry pl ph $ (make xs::a)
+            zs = filter (isCovered pl ph) xs
+        in samesame ys zs
+
+    prop_only_self :: a -> [Point] -> Property
+    prop_only_self _ xs = not (null xs) ==>
+        let x = head xs
+            ys = map normaliseToX . querry x x $ (make xs::a)
+        in not (null ys) && all (==x) ys
+
+tsts :: Rangetree a => a -> IO ()
+tsts x = do
+    quickCheck (prop_model_filter x)
+    quickCheck (prop_all_in x)
+    quickCheck (prop_all_minmax x)
+    quickCheck (prop_only_self x)
 
 samesame xs ys = null (xs \\ ys) && null (ys \\ xs)
 
