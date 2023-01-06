@@ -6,11 +6,11 @@ import Test.QuickCheck
 import Data.List ((\\))
 import Quad
 
-instance Rangetree Kd where
+instance GeneralTree Kd where
     make = makeKd
     querry = rangeKd
 
-instance Rangetree Qtree where
+instance GeneralTree Qtree where
     make = makeQtree
     querry = rangeQt
 
@@ -29,7 +29,7 @@ instance Arbitrary Qtree where
 
 
 
-class Rangetree a where
+class GeneralTree a where
     make :: [Point] -> a
     emptyTree :: a
     emptyTree = make []
@@ -57,7 +57,7 @@ class Rangetree a where
             ys = map normaliseToX . querry x x $ (make xs::a)
         in not (null ys) && all (==x) ys
 
-tsts :: Rangetree a => a -> IO ()
+tsts :: GeneralTree a => a -> IO ()
 tsts x = do
     quickCheck (prop_model_filter x)
     quickCheck (prop_all_in x)

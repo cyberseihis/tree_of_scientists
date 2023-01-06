@@ -4,7 +4,7 @@ description: Multidimentional data structures class project
 authors: dabbing
 categories: ceid, software
 created: 2022-12-28
-updated: 2023-01-05
+updated: 2023-01-06
 version: 0.0.15
 @end
 
@@ -100,6 +100,14 @@ version: 0.0.15
     - [x] Write datatype
     - [x] Write constructor
     - [x] Write range query
+    - [ ] Change it so it uses a record with 4 quadrands as fields
+*** Range tree
+    - [x] Learn about balanced binary trees
+      How do you make a comparison tree balanced when there are a ton of ties?
+      Have array of points instead of single point to avoid duplicate nodes
+    - [-] Implement 1d version
+    - [ ] Implement report function
+
 ** Tests
    - [x] All points in result of query are inside range points
    - [x] Querying with minimum and maximum values returns all points

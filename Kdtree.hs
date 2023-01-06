@@ -17,8 +17,7 @@ other (Pointy x y) = Pointx x y
 makeKd [] = Kempty
 makeKd points = Kd median (subKd less) (subKd more)
   where
-    (below, median : above) = splitInHalf . sort $ points
-    (less,more) = break (>median) (below++above)
+    (less, median, more) = splitApart points
     subKd = makeKd . map other
 
 rangeKd :: Point -> Point -> Kd -> [Point]
@@ -36,3 +35,9 @@ isCovered low high point =
 
 splitInHalf :: [a] -> ([a], [a])
 splitInHalf = uncurry splitAt . ((`div`2).length &&& id)
+
+splitApart xs =
+    let
+    (below, median : above) = splitInHalf . sort $ xs
+    (less,more) = break (>median) (below++above)
+    in (less,median,more)
