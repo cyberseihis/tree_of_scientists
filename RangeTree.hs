@@ -3,16 +3,19 @@
 module RangeTree where
 import Kdtree
 import Control.Arrow ((>>>))
-import Data.List (sort, group, partition)
+import Data.List (sort, group, partition, singleton)
 
 data OneTree =
-    Onempty | Oleaf Int |
+    Onempty | Oleaf Bunch |
     Onode {
-        n :: Int,
+        n :: Bunch,
         less :: OneTree,
         more :: OneTree} deriving (Eq,Show)
 
 newtype Bunch = Bunch [Int] deriving (Eq,Show)
+
+instance Num Bunch where
+    fromInteger = Bunch . singleton . fromInteger
 
 instance Ord Bunch where
     Bunch (x:_) <= Bunch (y:_) = x <= y
@@ -20,8 +23,10 @@ instance Ord Bunch where
 matchUp :: [Int] -> [Bunch]
 matchUp = sort >>> group >>> map Bunch
 
--- Replace Ints with Bunch
--- Oops I forgot to keep the split value for the leaves too
+makeRang = flip makeOne [] . matchUp
+
+rangeRang low high ontree = concatMap (\(Bunch a)->a) $ rangeOne low high ontree
+
 makeOne [] [] = Onempty
 makeOne [x] [] = Oleaf x
 makeOne [] [x] = Oleaf x
@@ -29,7 +34,6 @@ makeOne xs ys = Onode median (makeOne less (median:ls)) (makeOne more mr) where
     (less, median, more) = splitApart xs
     (ls,mr) = partition (<=median) ys
 
-rangeOne :: Int -> Int -> OneTree -> [Int]
 rangeOne _ _ Onempty = []
 rangeOne low high (Oleaf n) = [n | low <=n && n<=high]
 rangeOne low high o@(Onode {..})
@@ -38,14 +42,12 @@ rangeOne low high o@(Onode {..})
     | low <= n = rangeOne low high less
     | otherwise = rangeOne low high more
 
-rangeLeft :: Int -> OneTree -> [Int]
 rangeLeft _ Onempty = []
 rangeLeft low (Oleaf n) = [n | low <= n]
 rangeLeft low Onode {..}
     | low > n = rangeLeft low more
     | otherwise = report more ++ rangeLeft low less
 
-rangeRight :: Int -> OneTree -> [Int]
 rangeRight _ Onempty = []
 rangeRight high (Oleaf n) = [n | high > n]
 rangeRight high Onode {..}
