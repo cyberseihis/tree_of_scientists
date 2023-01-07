@@ -3,7 +3,7 @@
 module RangeTree where
 import Kdtree
 import Control.Arrow ((>>>))
-import Data.List (sort, group)
+import Data.List (sort, group, partition)
 
 data OneTree =
     Onempty | Oleaf Int |
@@ -22,10 +22,12 @@ matchUp = sort >>> group >>> map Bunch
 
 -- Replace Ints with Bunch
 -- Oops I forgot to keep the split value for the leaves too
-makeOne [] = Onempty
-makeOne [x] = Oleaf x
-makeOne xs = Onode median (makeOne less) (makeOne more) where
+makeOne [] [] = Onempty
+makeOne [x] [] = Oleaf x
+makeOne [] [x] = Oleaf x
+makeOne xs ys = Onode median (makeOne less (median:ls)) (makeOne more mr) where
     (less, median, more) = splitApart xs
+    (ls,mr) = partition (<=median) ys
 
 rangeOne :: Int -> Int -> OneTree -> [Int]
 rangeOne _ _ Onempty = []
@@ -47,8 +49,8 @@ rangeRight :: Int -> OneTree -> [Int]
 rangeRight _ Onempty = []
 rangeRight high (Oleaf n) = [n | high > n]
 rangeRight high Onode {..}
-    | high <= n = rangeRight high more
-    | otherwise = report more ++ rangeRight high less
+    | high <= n = rangeRight high less
+    | otherwise = report less ++ rangeRight high more
 
 report Onempty = []
 report (Oleaf n) = [n]
