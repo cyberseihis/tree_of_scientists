@@ -1,31 +1,34 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE InstanceSigs #-}
 module RangeTree where
 import Kdtree
 import Control.Arrow ((>>>))
 import Data.List (sort, group, partition, singleton)
 
-data OneTree =
-    Onempty | Oleaf Bunch |
+data OneTree a =
+    Onempty | Oleaf (Bunch a) |
     Onode {
-        n :: Bunch,
-        less :: OneTree,
-        more :: OneTree} deriving (Eq,Show)
+        n :: Bunch a,
+        less :: OneTree a,
+        more :: OneTree a} deriving (Eq,Show)
 
-newtype Bunch = Bunch [Int] deriving (Eq,Show)
+newtype Bunch a = Bunch [a] deriving (Eq,Show)
 
-instance Num Bunch where
-    fromInteger = Bunch . singleton . fromInteger
-
-instance Ord Bunch where
+instance Ord a => Ord (Bunch a) where
+    (<=) :: Ord a => Bunch a -> Bunch a -> Bool
     Bunch (x:_) <= Bunch (y:_) = x <= y
 
-matchUp :: [Int] -> [Bunch]
+matchUp :: Ord a => [a] -> [Bunch a]
 matchUp = sort >>> group >>> map Bunch
 
+makeRang :: Ord a => [a] -> OneTree a
 makeRang = flip makeOne [] . matchUp
 
-rangeRang low high ontree = concatMap (\(Bunch a)->a) $ rangeOne low high ontree
+rangeRang low high ontree = concatMap (\(Bunch a)->a) $
+    rangeOne ll hh ontree where
+        ll = Bunch [low]
+        hh = Bunch [high]
 
 makeOne [] [] = Onempty
 makeOne [x] [] = Oleaf x
