@@ -25,5 +25,5 @@ library
     -- exposed-modules: Kdtree
     other-modules: Kdtree, KdTest, Quad, RangeTree
     build-depends:    
-    	base ^>=4.15.1.0, containers, QuickCheck
+    	base , containers, QuickCheck
     default-language: Haskell2010

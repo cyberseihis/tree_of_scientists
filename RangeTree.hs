@@ -1,5 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE DeriveFunctor #-}
 module RangeTree where
 import Kdtree
 import Control.Arrow ((>>>))
@@ -21,11 +22,14 @@ instance Ord a => Ord (OneTree a) where
     compare _ Onempty = GT
     compare x y = compare (getOut x) (getOut y)
 
-newtype Bunch a = Bunch [a] deriving (Eq,Show,Ord)
+newtype Bunch a = Bunch [a] deriving (Eq,Show,Ord,Functor)
+
+unBunch (Bunch a) = a
 
 matchUp :: Ord a => [a] -> [Bunch a]
 matchUp = sort >>> group >>> map Bunch
 
+makeRang :: Ord a => [a] -> OneTree (Bunch a)
 makeRang = flip makeOne [] . matchUp
 
 rangeRang low high ontree = concatMap (\(Bunch a)->a) $
@@ -72,3 +76,23 @@ isSplitnode low high Onode {n} = low <= n && n <= high
 tstt = rangeRang 40 70 xx where
     b = [3,8..100]++[63,68,43,68]
     xx = makeRang b
+
+sprout :: OneTree (Bunch Point) -> OneTree (OneTree (Bunch Point))
+sprout Onempty = Onempty
+sprout x@(Oleaf a) = Oleaf x
+sprout x@Onode {..} = Onode {n=sideTree n.report$x, less=sprout less, more=sprout more}
+
+-- Previous point of comparison given to change root node to compare well
+-- in both dimentions
+sideTree :: Bunch Point -> [Bunch Point] -> OneTree (Bunch Point)
+sideTree nn points =
+    let x@Onode {..} = makeRang . map other . concatMap unBunch $ points
+        y = x {n=surgery n nn}
+    in y
+
+surgery :: Bunch Point -> Bunch Point -> Bunch Point
+surgery (Bunch (nx:nxs)) (Bunch (nn:_)) = Bunch $ butcher nx nn:nxs
+
+butcher :: Point -> Point -> Point
+butcher (Pointy _ y) (Pointy nx _) = Pointy nx y
+
