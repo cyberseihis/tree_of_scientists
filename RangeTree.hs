@@ -3,10 +3,12 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ConstrainedClassMethods #-}
+{-# LANGUAGE UndecidableInstances #-}
 module RangeTree where
 import Kdtree
 import Control.Arrow ((>>>))
-import Data.List (sort, group, partition, singleton)
+import Data.List (sort, group, partition, singleton, groupBy, sortOn)
 
 data OneTree a =
     Onempty | Oleaf a |
@@ -26,15 +28,16 @@ instance Ord a => Ord (OneTree a) where
 
 type Bunch a = [a]
 
-matchUp :: Ord a => [a] -> [Bunch a]
-matchUp = sort >>> group
+matchUp = sort >>> groupBy (\pa pb->x pa == x pb)
+matchUpy = sortOn y >>> groupBy (\pa pb->y pa == y pb)
 
-makeRang :: Ord a => [a] -> OneTree (Bunch a)
-makeRang = makeOne . matchUp
+makeRang = sprout . makeOne . matchUp
 
-rangeRang low high = rangeOne ll hh where
-        ll = [low]
-        hh = [high]
+rangeRang :: Point -> Point -> OneTree Obp -> [Point]
+rangeRang low high =
+    concatMap (\(Oleaf x)->x) . rangeOne ll hh where
+        ll = Oleaf [low]
+        hh = Oleaf [high]
 
 makeOne [] = Onempty
 makeOne [x] = Oleaf x
@@ -44,30 +47,37 @@ makeOne xs =
     mkLess = makeOne (median:less)
     mkMore = makeOne more
 
+looksBounded low high n =
+    compare low n /= GT &&
+    compare high n /= LT
+
 rangeOne :: (Reportable a,Ord a) => a-> a-> OneTree a -> [a]
 rangeOne _ _ Onempty = []
-rangeOne low high (Oleaf n) = [n | low <=n && n<=high]
+rangeOne low high (Oleaf n) = doubleCheck low high 
+    [n|looksBounded low high n]
 rangeOne low high o@(Onode {..})
     | isSplitnode low high o =
         rangeLeft low high less ++ rangeRight low high more
-    | low <= n = rangeOne low high less
+    | compare low n /= GT = rangeOne low high less
     | otherwise = rangeOne low high more
 
 rangeLeft ::
     (Reportable a, Ord a) =>
     a -> a-> OneTree a -> [a]
 rangeLeft _ _ Onempty = []
-rangeLeft low high (Oleaf n) = [n | low <= n]
+rangeLeft low high (Oleaf n) = doubleCheck low high 
+    [n | compare low n /= GT]
 rangeLeft low high Onode {..}
-    | low > n = rangeLeft low high more
+    | compare low n == GT= rangeLeft low high more
     | otherwise = reportx more ++ rangeLeft low high less
     where
     reportx = reportO low high
 
 rangeRight _ _ Onempty = []
-rangeRight low high (Oleaf n) = [n | high > n]
+rangeRight low high (Oleaf n) = doubleCheck low high 
+    [n |compare high n /= LT]
 rangeRight low high Onode {..}
-    | high <= n = rangeRight low high less
+    | compare high n /= GT  = rangeRight low high less
     | otherwise = reportx less ++ rangeRight low high more
     where
     reportx = reportO low high
@@ -87,33 +97,38 @@ subRange (Oleaf low) (Oleaf high) x =
 
 type Obp = OneTree (Bunch Point)
 
-class Reportable a where
+class Ord a => Reportable a where
     reportO :: a -> a -> OneTree a -> [a]
     reportO _ _ = report
+    doubleCheck :: a -> a -> [a] -> [a]
+    doubleCheck _ _ = id
 
-instance Reportable a
+instance Ord a => Reportable a
 
 instance {-# OVERLAPPING #-} Reportable Obp where
     reportO = subRange
+    doubleCheck _ _ [] = []
+    doubleCheck l h [olf] = subRange l h $ Oleaf olf
 
 report Onempty = []
 report (Oleaf n) = [n]
 report Onode {..} = concatMap report [less,more]
 
-isSplitnode low high Onode {n} = low <= n && n <= high
+isSplitnode low high Onode {n} = looksBounded low high n
 
 sprout :: Obp -> OneTree Obp
 sprout Onempty = Onempty
-sprout x@(Oleaf a) = Oleaf x
+sprout x@(Oleaf a) = Oleaf . sideTree a . matchUpy $ a
 sprout x@Onode {..} = Onode {n=sideTree n.report$x, less=sprout less, more=sprout more}
 
 -- Previous point of comparison given to change root node to compare well
 -- in both dimentions
-sideTree :: Bunch Point -> [Bunch Point] -> OneTree (Bunch Point)
+sideTree :: Bunch Point -> [Bunch Point] -> Obp
 sideTree nn points =
-    let x@Onode {..} = makeRang . map other . concat $ points
-        y = x {n=surgery n nn}
-    in y
+    let x = makeOne . matchUp . map other . concat $ points
+    in case x of
+        Onode {..} -> x {n=surgery n nn}
+        Oleaf xx -> Oleaf $ surgery xx nn
 
 surgery :: Bunch Point -> Bunch Point -> Bunch Point
 surgery ((nx:nxs)) ((nn:_)) = butcher nx nn:nxs

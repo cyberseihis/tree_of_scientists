@@ -1,10 +1,13 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE FlexibleInstances #-}
 module KdTest where
 import Kdtree
+import RangeTree
 import Test.QuickCheck
 import Data.List ((\\))
 import Quad
+import Debug.Trace (traceShow)
 
 instance GeneralTree Kd where
     make = makeKd
@@ -13,6 +16,12 @@ instance GeneralTree Kd where
 instance GeneralTree Qtree where
     make = makeQtree
     querry = rangeQt
+
+instance GeneralTree (OneTree Obp) where
+    make = makeRang
+    querry = rangeRang
+
+rangEmpty = Onempty :: OneTree Obp
 
 instance Arbitrary Point where
     arbitrary = do
@@ -53,16 +62,17 @@ class GeneralTree a where
 
     prop_only_self :: a -> [Point] -> Property
     prop_only_self _ xs = not (null xs) ==>
+        traceShow xs $
         let x = head xs
             ys = map normaliseToX . querry x x $ (make xs::a)
         in not (null ys) && all (==x) ys
 
 tsts :: GeneralTree a => a -> IO ()
 tsts x = do
-    quickCheck (prop_model_filter x)
+    quickCheck (prop_only_self x)
     quickCheck (prop_all_in x)
     quickCheck (prop_all_minmax x)
-    quickCheck (prop_only_self x)
+    quickCheck (prop_model_filter x)
 
 samesame xs ys = null (xs \\ ys) && null (ys \\ xs)
 

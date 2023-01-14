@@ -9,10 +9,10 @@ data Kd = Kempty | Kd Point Kd Kd deriving (Eq, Show)
 data Point = Pointx {x :: Int, y :: Int} | Pointy {x :: Int, y :: Int} deriving (Eq, Show)
 
 instance Ord Point where
-    (Pointx x _) <= (Pointx z _) = x <= z
-    (Pointx x _) <= (Pointy z _) = x <= z
-    (Pointy _ y) <= (Pointy _ z) = y <= z
-    (Pointy _ y) <= (Pointx _ z) = y <= z
+    (Pointx x _) `compare` (Pointx z _) = x `compare` z
+    (Pointx x _) `compare` (Pointy z _) = x `compare` z
+    (Pointy _ y) `compare` (Pointy _ z) = y `compare` z
+    (Pointy _ y) `compare` (Pointx _ z) = y `compare` z
 
 other (Pointx x y) = Pointy x y
 other (Pointy x y) = Pointx x y
