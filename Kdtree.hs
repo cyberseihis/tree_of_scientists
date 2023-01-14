@@ -1,6 +1,7 @@
+{-# LANGUAGE LexicalNegation #-}
 module Kdtree  where
 import Data.List (sortOn, sort)
-import Control.Arrow (Arrow((&&&)))
+import Control.Arrow (Arrow((&&&)), (>>>))
 
 type Axis = Bool
 data Kd = Kempty | Kd Point Kd Kd deriving (Eq, Show)
@@ -36,8 +37,21 @@ isCovered low high point =
 splitInHalf :: [a] -> ([a], [a])
 splitInHalf = uncurry splitAt . ((`div`2).length &&& id)
 
+splitDownHalf :: [a] -> ([a], [a])
+splitDownHalf = uncurry splitAt . (divUpHalf.length &&& id)
+
+divUpHalf = max 0 . (- 1) . (`div`2)
+
 splitApart xs =
     let
     (below, median : above) = splitInHalf . sort $ xs
     (less,more) = break (>median) (below++above)
     in (less,median,more)
+
+
+splitEarly xs =
+    let
+    (below, median : above) = splitDownHalf . sort $ xs
+    (less,more) = break (>median) (below++above)
+    in (less,median,more)
+

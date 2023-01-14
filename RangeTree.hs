@@ -30,22 +30,20 @@ matchUp :: Ord a => [a] -> [Bunch a]
 matchUp = sort >>> group >>> map Bunch
 
 makeRang :: Ord a => [a] -> OneTree (Bunch a)
-makeRang = flip makeOne [] . matchUp
+makeRang = makeOne . matchUp
 
 rangeRang low high ontree = concatMap (\(Bunch a)->a) $
     rangeOne ll hh ontree where
         ll = Bunch [low]
         hh = Bunch [high]
 
-makeOne [] [] = Onempty
-makeOne [x] [] = Oleaf x
-makeOne [] [x] = Oleaf x
-makeOne xs ys =
+makeOne [] = Onempty
+makeOne [x] = Oleaf x
+makeOne xs =
     Onode median mkLess mkMore where
-    (less, median, more) = splitApart xs
-    (ls,mr) = partition (<=median) ys
-    mkLess = makeOne less (median:ls)
-    mkMore = makeOne more mr
+    (less, median, more) = splitEarly xs
+    mkLess = makeOne (median:less)
+    mkMore = makeOne more
 
 rangeOne _ _ Onempty = []
 rangeOne low high (Oleaf n) = [n | low <=n && n<=high]
