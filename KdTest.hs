@@ -17,11 +17,9 @@ instance GeneralTree Qtree where
     make = makeQtree
     querry = rangeQt
 
-instance GeneralTree (OneTree Obp) where
-    make = makeRang
-    querry = rangeRang
-
-rangEmpty = Onempty :: OneTree Obp
+instance GeneralTree TwoTree where
+    make = makeRange
+    querry = rangeRange
 
 instance Arbitrary Point where
     arbitrary = do
@@ -62,7 +60,6 @@ class GeneralTree a where
 
     prop_only_self :: a -> [Point] -> Property
     prop_only_self _ xs = not (null xs) ==>
-        traceShow xs $
         let x = head xs
             ys = map normaliseToX . querry x x $ (make xs::a)
         in not (null ys) && all (==x) ys
