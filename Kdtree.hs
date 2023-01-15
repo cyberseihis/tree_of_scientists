@@ -10,9 +10,9 @@ data Point = Pointx {x :: Int, y :: Int} | Pointy {x :: Int, y :: Int} deriving 
 
 instance Ord Point where
     (Pointx x _) `compare` (Pointx z _) = x `compare` z
-    (Pointx x _) `compare` (Pointy z _) = x `compare` z
+    -- (Pointx x _) `compare` (Pointy z _) = x `compare` z
     (Pointy _ y) `compare` (Pointy _ z) = y `compare` z
-    (Pointy _ y) `compare` (Pointx _ z) = y `compare` z
+    -- (Pointy _ y) `compare` (Pointx _ z) = y `compare` z
 
 other (Pointx x y) = Pointy x y
 other (Pointy x y) = Pointx x y
