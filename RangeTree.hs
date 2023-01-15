@@ -29,6 +29,17 @@ instance Eq Bunch where
 instance Ord Bunch where
     Bunch (x:_) <= Bunch (y:_) = x <= y
 
+makeRange :: [Point] -> TwoTree
+makeRange = matchUp >>> makeTwo
+
+rangeRange :: Point -> Point -> TwoTree -> [Point]
+rangeRange low high tree =
+    let ll = Bunch [low]
+        hh = Bunch [high]
+        resB = rangeTwo ll hh tree
+    in concatMap unBunch resB
+
+
 bother :: Bunch -> Bunch
 bother (Bunch x) = Bunch . map other $ x
 
