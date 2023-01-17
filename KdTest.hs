@@ -4,6 +4,7 @@
 module KdTest where
 import Kdtree
 import RangeTree
+import RTree
 import Test.QuickCheck
 import Data.List ((\\))
 import Quad
@@ -20,6 +21,10 @@ instance GeneralTree Qtree where
 instance GeneralTree TwoTree where
     make = makeRange
     querry = rangeRange
+
+instance GeneralTree RTree where
+    make = makeRtree 3
+    querry = rangeRt
 
 instance Arbitrary Point where
     arbitrary = do
