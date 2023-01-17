@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module Quad where
 import Kdtree
 import Data.List.NonEmpty (groupAllWith, toList)
@@ -9,7 +10,18 @@ import Data.Ord (comparing)
 import Data.Foldable (maximumBy)
 import Data.List (nub)
 
-data Qtree = Qempty | Qtree Point (Map Quad Qtree) deriving (Eq,Show)
+data Qdree = Qiempty | Qdree Point (Map Quad Qtree) deriving (Eq,Show)
+
+data Qtree = 
+    Qempty | 
+    Qtree 
+    { n :: Point
+    , ne :: Qtree
+    , se :: Qtree
+    , sw :: Qtree
+    , nw :: Qtree
+    } deriving (Eq,Show)
+
 type Quad = (Bool,Bool)
 
 compQuarts x y = (x <= y, other x <= other y)
@@ -33,23 +45,31 @@ spreadAround x =
 
 makeQtree :: [Point] -> Qtree
 makeQtree [] = Qempty
-makeQtree points = mkQ points
+makeQtree points =
+    let (n,[ne,nw,se,sw]) = mkQ points
+    in Qtree {n=n, ne=ne, se=se, sw=sw, nw=nw}
+
 mkQ =
     removeEach >>>
     maximumBy (comparing $ uncurry spreadAround) >>>
     (fst &&& uncurry splitAround) >>>
-    second (Map.map makeQtree) >>>
-    uncurry Qtree
+    second (Map.map makeQtree >>> Map.elems)
+
+fielt :: Quad -> Qtree -> Qtree
+fielt (False,False) = ne
+fielt (False,True) = nw
+fielt (True,False) = se
+fielt (True,True) = sw
 
 rangeQt :: Point -> Point -> Qtree -> [Point]
 rangeQt _ _ Qempty = []
-rangeQt smol big (Qtree node dict) =
-    let (j,i) = compQuarts node smol
-        (h,k) = compQuarts node big
-        hj = nub [(j,i),(h,i),(j,k),(h,k)]
-        ww = concatMap (rangeQt smol big . (dict!)) hj
-        isco = isCovered smol big node 
-        hm = if isco then node:ww else ww
+rangeQt smol big qt@(Qtree {n}) =
+    let (j,i) = compQuarts n smol
+        (h,k) = compQuarts n big
+        hj = map fielt . nub $ [(j,i),(h,i),(j,k),(h,k)]
+        ww = concatMap (rangeQt smol big) $ hj <*> [qt]
+        isco = isCovered smol big n 
+        hm = if isco then n:ww else ww
     in hm
     
 
