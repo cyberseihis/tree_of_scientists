@@ -4,7 +4,7 @@ description: Multidimentional data structures class project
 authors: dabbing
 categories: ceid, software
 created: 2022-12-28
-updated: 2023-01-09
+updated: 2023-01-16
 version: 0.0.15
 @end
 
@@ -107,7 +107,9 @@ version: 0.0.15
       Have array of points instead of single point to avoid duplicate nodes
     - [x] Implement 1d version
     - [x] Implement report function
-    - [ ] Function to turn 1d tree to tree of trees
+    - [x] Make 2d version
+    - [x] Tests
+*** Rtree
 
 ** Tests
    - [x] All points in result of query are inside range points
