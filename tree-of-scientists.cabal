@@ -25,5 +25,5 @@ library
     -- exposed-modules: Kdtree
     other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, LshMinhash
     build-depends:    
-    	base , containers, QuickCheck, hashable, split
+    	base , containers, QuickCheck, data-hash, split
     default-language: Haskell2010

@@ -1,24 +1,14 @@
-module LshMinhsash where
+module LshMinhash where
 import Control.Arrow ((>>>), Arrow ((***)))
 import GHC.Integer (hashInteger)
-import Data.Hashable
+import Data.Hash
 import Data.List.Split
 
-type WordH = Int
-type Doc = [WordH]
-type HashFunc = WordH -> Int
+idk :: String -> Hash -> Hash
+idk str i = minimum . map f . words $ str
+    where f = hash . asWord64 . combine i . hash
 
-docHash :: String -> Doc
-docHash = words >>> map hash
+someNumbers = hash <$> [(1::Int)..]
 
-docMinHash :: Doc -> HashFunc -> Int
-docMinHash doc hf = minimum . map hf $ doc
-
-someHashes :: [HashFunc]
-someHashes = hashWithSalt <$> [1..]
-
-docIdVector :: Int -> Doc -> [Int]
-docIdVector n doc = docMinHash doc <$> take n someHashes
-
-bucketHash :: Int -> [Int] -> [Int]
-bucketHash n = chunksOf n >>> map hash
+license str = 
+    take 120 $ idk str <$> someNumbers
