@@ -1,4 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
 module RTree where
 import Kdtree
 import Control.Arrow (Arrow((&&&), second))
@@ -13,10 +12,10 @@ data Mbr = Mbr
 data RTree = Rempty | Rleaf Point | Rnode Mbr [RTree] deriving (Eq,Show)
 
 singleMbr :: Point -> Mbr
-singleMbr (Pointx x y) = Mbr x y x y
+singleMbr (Pointx x y _) = Mbr x y x y
 
 doubleMbr :: Point -> Point -> Mbr
-doubleMbr (Pointx sx sy) (Pointx mx my) = Mbr sx sy mx my
+doubleMbr (Pointx sx sy _) (Pointx mx my _) = Mbr sx sy mx my
 
 makeRtree :: Int -> [Point] -> RTree
 makeRtree _ [] = Rempty

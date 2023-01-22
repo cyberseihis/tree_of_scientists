@@ -6,16 +6,16 @@ import Control.Arrow (Arrow((&&&)), (>>>))
 type Axis = Bool
 data Kd = Kempty | Kd Point Kd Kd deriving (Eq, Show)
 
-data Point = Pointx {x :: Int, y :: Int} | Pointy {x :: Int, y :: Int} deriving (Eq, Show)
+data Point = Pointx {x :: Int, y :: Int, stuff :: Int} | Pointy {x :: Int, y :: Int, stuff :: Int} deriving (Eq, Show)
 
 instance Ord Point where
-    (Pointx x _) `compare` (Pointx z _) = x `compare` z
+    (Pointx x _ _) `compare` (Pointx z _ _) = x `compare` z
     -- (Pointx x _) `compare` (Pointy z _) = x `compare` z
-    (Pointy _ y) `compare` (Pointy _ z) = y `compare` z
+    (Pointy _ y _) `compare` (Pointy _ z _) = y `compare` z
     -- (Pointy _ y) `compare` (Pointx _ z) = y `compare` z
 
-other (Pointx x y) = Pointy x y
-other (Pointy x y) = Pointx x y
+other (Pointx x y i) = Pointy x y i
+other (Pointy x y i) = Pointx x y i
 
 makeKd [] = Kempty
 makeKd points = Kd median (subKd less) (subKd more)

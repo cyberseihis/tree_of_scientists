@@ -28,8 +28,7 @@ instance GeneralTree RTree where
 
 instance Arbitrary Point where
     arbitrary = do
-        rx <- arbitrary
-        Pointx rx <$> arbitrary
+        Pointx <$> arbitrary <*> arbitrary <*> arbitrary
 
 instance Arbitrary Kd where
     arbitrary = do
@@ -51,8 +50,8 @@ class GeneralTree a where
         all (isCovered pl ph . normaliseToX) . querry pl ph $ (make xs::a)
     prop_all_minmax :: a -> [Point] -> Bool
     prop_all_minmax  _ xs =
-        let minPoint = Pointx minBound minBound
-            maxPoint = Pointx maxBound maxBound
+        let minPoint = Pointx minBound minBound 0
+            maxPoint = Pointx maxBound maxBound 0
             kdt :: a= make xs
             ys = map normaliseToX $ querry minPoint maxPoint kdt
         in samesame xs ys
@@ -76,10 +75,17 @@ tsts x = do
     quickCheck (prop_all_minmax x)
     quickCheck (prop_model_filter x)
 
+mySuite :: IO ()
+mySuite = do
+    tsts Kempty
+    tsts Qempty
+    tsts Tnempty
+    tsts Rempty
+
 samesame xs ys = null (xs \\ ys) && null (ys \\ xs)
 
 smaller :: Point -> Point -> Bool
 smaller pl ph = pl <= ph && other pl <= other ph
 
-normaliseToX (Pointy x y) = Pointx x y
+normaliseToX (Pointy x y i) = Pointx x y i
 normaliseToX p = p
