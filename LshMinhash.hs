@@ -4,9 +4,9 @@ import GHC.Integer (hashInteger)
 import Data.Hash
 import Data.List.Split
 
-idk :: String -> Hash -> Hash
+idk :: String -> Hash -> Int
 idk str i = minimum . map f . words $ str
-    where f = hash . asWord64 . combine i . hash
+    where f = fromIntegral . asWord64 . hash . asWord64 . combine i . hash
 
 someNumbers = hash <$> [(1::Int)..]
 
