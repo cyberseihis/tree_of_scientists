@@ -28,6 +28,8 @@ someNumbers = hash <$> [(1::Int)..]
 license str =
     take 120 $ docHash str <$> someNumbers
 
+sigSimilarity x y = (/120) . fromIntegral . length . filter id $ zipWith (==) (license x) (license y)
+
 type Band = Int
 type Index = Int
 type Bucket = Map Index [Index]
