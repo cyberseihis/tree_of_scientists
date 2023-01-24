@@ -50,7 +50,7 @@ instance Arbitrary Query where
         lb <- choose (ls,'Z')
         ps <- choose (0,13)
         pb <- choose (ps,13)
-        thr <- choose (0,1)
+        thr <- choose (0,0.4)
         return $ Query ls lb ps pb thr
 
 execution :: GeneralTree a => a -> Query -> [Int]
