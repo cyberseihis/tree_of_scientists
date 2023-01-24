@@ -29,6 +29,7 @@ license str =
     take 120 $ docHash str <$> someNumbers
 
 sigSimilarity x y = (/120) . fromIntegral . length . filter id $ zipWith (==) (license x) (license y)
+sigKinda x y = (/120) . fromIntegral . length . filter id $ zipWith (==) x y
 
 type Band = Int
 type Index = Int
