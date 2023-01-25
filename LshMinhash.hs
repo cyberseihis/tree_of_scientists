@@ -36,9 +36,9 @@ type Band = Int
 type Index = Int
 type Bucket = Map Index [Index]
 
--- Number of rows/bands hardcoded for 60%
+-- Number of rows/bands hardcoded for 20%
 bandifyX :: [Int] -> [Band]
-bandifyX = chunksOf 5 >>> map easyHash
+bandifyX = chunksOf 2 >>> take 50 >>> map ((`mod`10000).easyHash)
 
 -- No set ammount of buckets, just a map
 getBuckets :: [Band] -> Bucket
