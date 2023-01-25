@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 module LshMinhash where
 import Control.Arrow ((>>>), Arrow ((***), (&&&)))
 import GHC.Integer (hashInteger)
@@ -13,9 +14,9 @@ jaccardSimilarity xs ys =
         setY = fromList . words $ ys
     in  fromIntegral (size (intersection setX setY)) / fromIntegral (size (setX `union` setY))
 
-docHash :: String -> Hash -> Int
+docHash :: String -> Int -> Int
 docHash str i = minimum . map f . words $ str
-    where f = hash2Int . combine i . hash
+    where f = easyHash . (i,) . easyHash
 
 hash2Int :: Hash -> Int
 hash2Int = fromIntegral . asWord64 . hash . asWord64
@@ -23,13 +24,13 @@ hash2Int = fromIntegral . asWord64 . hash . asWord64
 easyHash :: Hashable a => a -> Int
 easyHash = hash2Int . hash
 
-someNumbers = hash <$> [(1::Int)..]
+someNumbers = easyHash <$> [(1::Int)..]
 
 license str =
-    take 120 $ docHash str <$> someNumbers
+    take 100 $ docHash str <$> someNumbers
 
-sigSimilarity x y = (/120) . fromIntegral . length . filter id $ zipWith (==) (license x) (license y)
-sigKinda x y = (/120) . fromIntegral . length . filter id $ zipWith (==) x y
+sigSimilarity x y = (/100) . fromIntegral . length . filter id $ zipWith (==) (license x) (license y)
+sigKinda x y = (/100) . fromIntegral . length . filter id $ zipWith (==) x y
 
 type Band = Int
 type Index = Int
