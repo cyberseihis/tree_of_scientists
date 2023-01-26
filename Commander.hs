@@ -4,6 +4,9 @@
 module Commander where
 
 import Kdtree
+import Quad
+import RTree
+import RangeTree
 import Data.Char (ord)
 import Control.Arrow ((>>>), Arrow ((&&&)))
 import KdTest (GeneralTree(make, querry))
@@ -11,7 +14,19 @@ import Test.QuickCheck (Arbitrary (arbitrary), choose)
 import Data.List (sort)
 
 ------------------------------------------------------------
--- Constants
+-- Hardcoding constants
+
+dumpTrees = do
+    spreadSheet <- lines <$> readFile "sorteddata.csv"
+    let space = csvToPoints spreadSheet
+        kdtree :: Kd = make space
+        quatree :: Qtree = make space
+        twotree :: TwoTree = make space
+        rtree :: RTree = make space
+    writeFile "dumpedTrees.csv" . show $ kdtree
+    appendFile "dumpedTrees.csv" . show $ quatree
+    appendFile "dumpedTrees.csv" . show $ twotree
+    appendFile "dumpedTrees.csv" . show $ rtree
 
 main = do
     spreadSheet <- lines <$> readFile "sorteddata.csv"

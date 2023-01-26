@@ -21,10 +21,8 @@ maintainer:         mcraftdm@gmail.com
 -- category:
 extra-source-files: CHANGELOG.md
 
-executable idkk
-    main-is: EzHash.hs
-
-    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, LshMinhash
+library
+    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, LshMinhash, Commander
     build-depends:    
     	base , containers, QuickCheck, data-hash, split, unordered-containers
     default-language: Haskell2010
