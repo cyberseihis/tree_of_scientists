@@ -2,9 +2,10 @@ module Main where
 
 import LshMinhash
 import Data.List (group, sort)
-import Control.Arrow ((&&&))
+import Control.Arrow ((&&&), (>>>))
 import Data.Functor ((<&>))
 import Data.List.Split (chunksOf)
+import qualified Data.IntSet as Set
 
 educate = unwords . drop 2 . words
 stories = map educate . lines
@@ -18,6 +19,12 @@ saveMinHashes =
 saveLHashes = 
     readFile "sorteddata.csv" >>=
     writeFile "myBands.csv" . theBands
+
+saveWordSets = 
+    readFile "sorteddata.csv" >>=
+    writeFile "wordSets.csv" . pikle where
+    pikle = show . map doc2Set . lines
+    doc2Set = words >>> map ((`mod`100000).easyHash) >>> Set.fromList
     
 -- For r=2 b=50 (which I will be using)
 -- [((False,False),4982),((False,True),210),((True,False),3024),((True,True),1096)]
