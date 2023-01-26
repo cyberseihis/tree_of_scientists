@@ -5,13 +5,11 @@ import GHC.Integer (hashInteger)
 import Data.Hash
 import Data.List hiding (union)
 import Data.List.Split
-import Data.Set (fromList, intersection, size, union)
 import Data.HashMap.Strict (HashMap, alter, empty, mapMaybe, elems)
+import Data.IntSet (IntSet, size, intersection, union)
 
-jaccardSimilarity xs ys =
-    let setX = fromList . words $ xs
-        setY = fromList . words $ ys
-    in  fromIntegral (size (intersection setX setY)) / fromIntegral (size (setX `union` setY))
+sanityJacc :: IntSet -> IntSet -> Bool
+sanityJacc xs ys = fromIntegral (size (intersection xs ys)) / fromIntegral (size (xs `union` ys)) > 0.2
 
 docHash :: String -> Int -> Int
 docHash str i = minimum . map f . words $ str

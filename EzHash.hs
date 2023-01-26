@@ -1,4 +1,4 @@
-module Main where
+module EzHash where
 
 import LshMinhash
 import Data.List (group, sort)
@@ -32,5 +32,3 @@ saveWordSets =
 -- Stats of similarities
 -- [(.0,1153),(.1,2784),(.2,672),(.3,44),(.4,3)]
 -- max similariry is .44
-
-main = print "No main here you got mislead"
