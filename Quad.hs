@@ -15,7 +15,7 @@ data Qdree = Qiempty | Qdree Point (Map Quad Qtree) deriving (Eq,Show)
 data Qtree = 
     Qempty | 
     Qtree 
-    { n :: Point
+    { m :: Point
     , ne :: Qtree
     , se :: Qtree
     , sw :: Qtree
@@ -46,8 +46,8 @@ spreadAround x =
 makeQtree :: [Point] -> Qtree
 makeQtree [] = Qempty
 makeQtree points =
-    let (n,[ne,nw,se,sw]) = mkQ points
-    in Qtree {n=n, ne=ne, se=se, sw=sw, nw=nw}
+    let (m,[ne,nw,se,sw]) = mkQ points
+    in Qtree {m=m, ne=ne, se=se, sw=sw, nw=nw}
 
 mkQ =
     removeEach >>>
@@ -63,13 +63,13 @@ fielt (True,True) = sw
 
 rangeQt :: Point -> Point -> Qtree -> [Point]
 rangeQt _ _ Qempty = []
-rangeQt smol big qt@(Qtree {n}) =
-    let (j,i) = compQuarts n smol
-        (h,k) = compQuarts n big
+rangeQt smol big qt@(Qtree {m}) =
+    let (j,i) = compQuarts m smol
+        (h,k) = compQuarts m big
         hj = map fielt . nub $ [(j,i),(h,i),(j,k),(h,k)]
         ww = concatMap (rangeQt smol big) $ hj <*> [qt]
-        isco = isCovered smol big n 
-        hm = if isco then n:ww else ww
+        isco = isCovered smol big m 
+        hm = if isco then m:ww else ww
     in hm
     
 

@@ -32,7 +32,7 @@ main = do
     spreadSheet <- lines <$> readFile "sorteddata.csv"
     let space = csvToPoints spreadSheet
         kdtree :: Kd = make space
-        qq = Query 'G' 'M' 1 9 0
+        qq = Query 'G' 'M' 1 9
         uhu = (spreadSheet!!) <$> execution kdtree qq
     mapM_ putStrLn uhu
 
@@ -56,8 +56,7 @@ data Query = Query
     {letterMin :: Char
     ,letterMax :: Char
     ,prizesMin :: Int
-    ,prizesMax :: Int
-    ,threshold :: Float} deriving (Eq,Show)
+    ,prizesMax :: Int} deriving (Eq,Show)
 
 instance Arbitrary Query where
     arbitrary = do
@@ -65,8 +64,7 @@ instance Arbitrary Query where
         lb <- choose (ls,'Z')
         ps <- choose (0,13)
         pb <- choose (ps,13)
-        thr <- choose (0,0.4)
-        return $ Query ls lb ps pb thr
+        return $ Query ls lb ps pb
 
 execution :: GeneralTree a => a -> Query -> [Int]
 execution tree Query {..} =

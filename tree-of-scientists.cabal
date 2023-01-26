@@ -21,8 +21,9 @@ maintainer:         mcraftdm@gmail.com
 -- category:
 extra-source-files: CHANGELOG.md
 
-library
-    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, LshMinhash, Commander
+executable exex
+    main-is: Main.hs
+    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, LshMinhash, Commander, Dumped
     build-depends:    
     	base , containers, QuickCheck, data-hash, split, unordered-containers
     default-language: Haskell2010
