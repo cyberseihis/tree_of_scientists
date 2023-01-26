@@ -6,8 +6,7 @@ import Data.Hash
 import Data.List hiding (union)
 import Data.List.Split
 import Data.Set (fromList, intersection, size, union)
-import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
+import Data.HashMap.Strict (HashMap, alter, empty, mapMaybe, elems)
 
 jaccardSimilarity xs ys =
     let setX = fromList . words $ xs
@@ -16,37 +15,36 @@ jaccardSimilarity xs ys =
 
 docHash :: String -> Int -> Int
 docHash str i = minimum . map f . words $ str
-    where f = easyHash . (i,) . easyHash
-
-hash2Int :: Hash -> Int
-hash2Int = fromIntegral . asWord64 . hash . asWord64
+    where f = easyHash . (easyHash i,) . easyHash
 
 easyHash :: Hashable a => a -> Int
-easyHash = hash2Int . hash
+easyHash = fromIntegral . asWord64 . hash . asWord64 . hash
 
-someNumbers = easyHash <$> [(1::Int)..]
-
-license str =
-    take 100 $ docHash str <$> someNumbers
-
-sigSimilarity x y = (/100) . fromIntegral . length . filter id $ zipWith (==) (license x) (license y)
-sigKinda x y = (/100) . fromIntegral . length . filter id $ zipWith (==) x y
+license str = docHash str <$> [(1::Int)..100]
 
 type Band = Int
 type Index = Int
-type Bucket = Map Index [Index]
+type Bucket = HashMap Index [Index]
 
 -- Number of rows/bands hardcoded for 20%
 bandifyX :: [Int] -> [Band]
 bandifyX = chunksOf 2 >>> take 50 >>> map ((`mod`10000).easyHash)
 
--- No set ammount of buckets, just a map
-getBuckets :: [Band] -> Bucket
-getBuckets = 
-    zip [(0::Index)..] >>>
-    sortOn snd >>>
-    groupBy (\(_,x) (_,y)->x==y) >>>
-    map (snd.head &&& map fst) >>>
-    Map.fromList
+rowToBucket :: [Band] -> Bucket
+rowToBucket = zip [0..] >>> foldl' include empty
 
-finalle = map license >>> map bandifyX >>> transpose >>> map getBuckets
+include :: Bucket -> (Index,Band) -> Bucket
+include bucket (i,band) = alter (shoveIndex i) band bucket
+
+shoveIndex :: Index -> Maybe [Index] -> Maybe [Index]
+shoveIndex ind  = Just . (ind:) . concat
+
+groupsToPairs :: Ord a => [a] -> [(a,a)]
+groupsToPairs xs = [(x,y)|x<-xs,y<-xs,x<y]
+
+matrixToPairs :: [[Band]] -> [(Index,Index)]
+matrixToPairs =
+    transpose >>>
+    concatMap (elems . rowToBucket) >>>
+    concatMap groupsToPairs >>>
+    nub
