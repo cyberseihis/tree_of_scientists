@@ -1,4 +1,4 @@
-module Profil where
+module Main where
 
 import Dumped (ktree,qtree,twotree,rtree)
 import Commander (execution,Query)
@@ -8,11 +8,11 @@ import KdTest (GeneralTree)
 sampleQuery :: GeneralTree a => a -> Query -> Bool
 sampleQuery tree query = execution tree query `seq` True
 
-heatCPU tree = quickCheckWith stdArgs {maxSuccess=100000,chatty=False} $ sampleQuery tree
+heatCPU tree = quickCheckWith stdArgs {maxSuccess=10000,chatty=False} $ sampleQuery tree
 
-krun = heatCPU ktree
-qrun = heatCPU qtree
-trun = heatCPU twotree
-rrun = heatCPU rtree
+krun = {-# SCC "KTREE" #-} heatCPU ktree
+qrun = {-# SCC "QUADTREE" #-} heatCPU qtree
+trun = {-# SCC "RANGETREE" #-} heatCPU twotree
+rrun = {-# SCC "R-TREE" #-} heatCPU rtree
 
-go = sequence_ [krun,qrun,trun,rrun]
+main = sequence_ [krun,qrun,trun,rrun]

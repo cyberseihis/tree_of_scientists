@@ -21,9 +21,19 @@ maintainer:         mcraftdm@gmail.com
 -- category:
 extra-source-files: CHANGELOG.md
 
-executable exex
-    main-is: Main.hs
-    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, LshMinhash, Commander, Dumped, Profil
+
+executable profil
+    main-is: Profil.hs
+    ghc-options: -O2 -threaded -prof "-with-rtsopts=-N -p"
+    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, LshMinhash, Commander, Dumped
     build-depends:    
-    	base , containers, QuickCheck, data-hash, split, unordered-containers
+        base , containers, QuickCheck, data-hash, split, unordered-containers
+    default-language: Haskell2010
+
+executable demo
+    main-is: Main.hs
+    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, LshMinhash, Commander, Dumped
+    build-depends:    
+        base , containers, QuickCheck, data-hash, split, unordered-containers
+    ghc-options: -O2 -threaded "-with-rtsopts=-N"
     default-language: Haskell2010
