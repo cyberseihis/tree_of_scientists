@@ -23,7 +23,7 @@ instance GeneralTree TwoTree where
     querry = rangeRange
 
 instance GeneralTree RTree where
-    make = makeRtree 3
+    make = makeRtree 10
     querry = rangeRt
 
 instance Arbitrary Point where
@@ -74,13 +74,6 @@ tsts x = do
     quickCheck (prop_all_in x)
     quickCheck (prop_all_minmax x)
     quickCheck (prop_model_filter x)
-
-mySuite :: IO ()
-mySuite = do
-    tsts Kempty
-    tsts Qempty
-    tsts Tnempty
-    tsts Rempty
 
 samesame xs ys = null (xs \\ ys) && null (ys \\ xs)
 

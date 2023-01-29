@@ -1,7 +1,7 @@
 module Main where
 
 import Commander
-import Dumped (twotree,theBands,wordSets,prettys)
+import Dumped (rtree,theBands,wordSets,prettys)
 import Data.List (sort)
 import LshMinhash (sanityJacc)
 import Control.Arrow (Arrow((***)))
@@ -17,6 +17,6 @@ prettyPrint (i,j) = do
 main = do
     [[ls],[lm],ss,sm] <- words <$> getLine
     let query = Query ls lm (read ss) (read sm)
-        exe = execution twotree query
+        exe = execution rtree query
         couples = filter jac $ candidates theBands exe
     mapM_ prettyPrint couples
