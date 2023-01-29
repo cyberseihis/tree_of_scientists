@@ -9,6 +9,7 @@ import Test.QuickCheck
 import Data.List ((\\))
 import Quad
 import Debug.Trace (traceShow)
+import Control.Monad (liftM3)
 
 instance GeneralTree Kd where
     make = makeKd
@@ -27,18 +28,7 @@ instance GeneralTree RTree where
     querry = rangeRt
 
 instance Arbitrary Point where
-    arbitrary = do
-        Pointx <$> arbitrary <*> arbitrary <*> arbitrary
-
-instance Arbitrary Kd where
-    arbitrary = do
-        make <$> arbitrary
-
-instance Arbitrary Qtree where
-    arbitrary = do
-        make <$> arbitrary
-
-
+    arbitrary = liftM3 Pointx arbitrary arbitrary arbitrary
 
 class GeneralTree a where
     make :: [Point] -> a
