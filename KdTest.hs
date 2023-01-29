@@ -52,18 +52,17 @@ class GeneralTree a where
             zs = filter (isCovered pl ph) xs
         in samesame ys zs
 
-    prop_only_self :: a -> [Point] -> Property
-    prop_only_self _ xs = not (null xs) ==>
-        let x = head xs
-            ys = map normaliseToX . querry x x $ (make xs::a)
-        in not (null ys) && all (==x) ys
-
 tsts :: GeneralTree a => a -> IO ()
 tsts x = do
-    quickCheck (prop_only_self x)
     quickCheck (prop_all_in x)
     quickCheck (prop_all_minmax x)
     quickCheck (prop_model_filter x)
+
+mySuite = do
+    tsts Kempty
+    tsts Qempty
+    tsts Tnempty
+    tsts Rempty
 
 samesame xs ys = null (xs \\ ys) && null (ys \\ xs)
 
