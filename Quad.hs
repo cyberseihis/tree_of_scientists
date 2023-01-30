@@ -10,19 +10,10 @@ import Data.Ord (comparing)
 import Data.Foldable (maximumBy)
 import Data.List (nub)
 
-data Qdree = Qiempty | Qdree Point (Map Quad Qtree) deriving (Eq,Show)
-
-data Qtree = 
-    Qempty | 
-    Qtree 
-    { m :: Point
-    , ne :: Qtree
-    , se :: Qtree
-    , sw :: Qtree
-    , nw :: Qtree
-    } deriving (Eq,Show)
-
-type Quad = (Bool,Bool)
+data Qtree =
+    Qempty | Qleaf Point |
+    Qtree {m::Point,ne::Qtree,se::Qtree,sw::Qtree,nw::Qtree}
+    deriving (Eq,Show)
 
 compQuarts x y = (x <= y, other x <= other y)
 
@@ -45,32 +36,25 @@ spreadAround x =
 
 makeQtree :: [Point] -> Qtree
 makeQtree [] = Qempty
+makeQtree [x] = Qleaf x
 makeQtree points =
-    let (m,[ne,nw,se,sw]) = mkQ points
-    in Qtree {m=m, ne=ne, se=se, sw=sw, nw=nw}
-
-mkQ =
-    removeEach >>>
+    (removeEach >>>
     maximumBy (comparing $ uncurry spreadAround) >>>
     (fst &&& uncurry splitAround) >>>
-    second (Map.map makeQtree >>> Map.elems)
+    second (Map.map makeQtree >>> Map.elems) >>>
+    \(m,[ne,nw,se,sw])->Qtree {m=m, ne=ne, se=se, sw=sw, nw=nw}
+    ) points
 
-fielt :: Quad -> Qtree -> Qtree
-fielt (False,False) = ne
-fielt (False,True) = nw
-fielt (True,False) = se
-fielt (True,True) = sw
+fielt = Map.fromList
+    [((False,False),ne),((False,True),nw),((True,False),se),((True,True),sw)]
 
 rangeQt :: Point -> Point -> Qtree -> [Point]
 rangeQt _ _ Qempty = []
-rangeQt smol big qt@(Qtree {m}) =
-    let (j,i) = compQuarts m smol
-        (h,k) = compQuarts m big
-        hj = map fielt . nub $ [(j,i),(h,i),(j,k),(h,k)]
-        ww = concatMap (rangeQt smol big) $ hj <*> [qt]
-        isco = isCovered smol big m 
-        hm = if isco then m:ww else ww
-    in hm
-    
+rangeQt low high (Qleaf x) = [x | isCovered low high x]
+rangeQt low high qt@(Qtree {m}) =
+    let [(j,i),(h,k)] = compQuarts m <$> [low,high]
+        hj = map (fielt!) . nub $ [(j,i),(h,i),(j,k),(h,k)]
+        ww = concatMap (rangeQt low high) $ hj <*> [qt]
+    in if isCovered low high m then m:ww else ww
 
 removeEach xs = zip xs (map (`List.delete` xs) xs)
