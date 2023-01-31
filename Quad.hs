@@ -8,7 +8,7 @@ import qualified Data.Map as Map
 import qualified Data.List as List
 import Data.Ord (comparing)
 import Data.Foldable (maximumBy)
-import Data.List (nub)
+import Data.List (nub, sortOn, sort)
 
 data Qtree =
     Qempty | Qleaf Point |
@@ -27,23 +27,16 @@ splitAround x =
     Map.fromList >>>
     (`Map.union` emptyQuart)
 
-spreadAround x =
-    splitAround x >>>
-    Map.elems >>>
-    map length >>>
-    (maximum &&& minimum) >>>
-    uncurry (-)
-
 makeQtree :: [Point] -> Qtree
 makeQtree [] = Qempty
 makeQtree [x] = Qleaf x
-makeQtree points =
-    (removeEach >>>
-    maximumBy (comparing $ uncurry spreadAround) >>>
+makeQtree points = mkQ points
+
+mkQ =
+    (medX &&& id) >>>
     (fst &&& uncurry splitAround) >>>
     second (Map.map makeQtree >>> Map.elems) >>>
     \(m,[ne,nw,se,sw])->Qtree {m=m, ne=ne, se=se, sw=sw, nw=nw}
-    ) points
 
 fielt = Map.fromList
     [((False,False),ne),((False,True),nw),((True,False),se),((True,True),sw)]
@@ -55,6 +48,11 @@ rangeQt low high qt@(Qtree {m}) =
     let [(j,i),(h,k)] = compQuarts m <$> [low,high]
         hj = map (fielt!) . nub $ [(j,i),(h,i),(j,k),(h,k)]
         ww = concatMap (rangeQt low high) $ hj <*> [qt]
-    in if isCovered low high m then m:ww else ww
+    in ww
 
-removeEach xs = zip xs (map (`List.delete` xs) xs)
+medX :: [Point] -> Point
+medX xs =
+    let n = length xs `div` 2
+        mx = (!!n).sort.map x $ xs
+        my = (!!n).sort.map y $ xs
+    in Pointx mx my []

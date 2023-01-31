@@ -5,7 +5,7 @@ import Control.Arrow (Arrow((&&&)), (>>>))
 
 data Kd = Kempty | Kd Point Kd Kd deriving (Eq, Show)
 
-data Point = Pointx {x :: Int, y :: Int, stuff :: Int} | Pointy {x :: Int, y :: Int, stuff :: Int} deriving (Eq, Show)
+data Point = Pointx {x :: Double, y :: Double, stuff :: [Int]} | Pointy {x :: Double, y :: Double, stuff :: [Int]} deriving (Eq, Show)
 
 instance Ord Point where
     (Pointx x _ _) `compare` (Pointx z _ _) = x `compare` z
