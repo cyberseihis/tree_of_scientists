@@ -17,26 +17,15 @@ data Qtree =
 
 compQuarts x y = (x <= y, other x <= other y)
 
-emptyQuart = Map.fromList . zip [(x,y)|x<-bls,y<-bls] $ repeat []
-    where bls = [False,True]
-
-splitAround x =
-    map (compQuarts x &&& id) >>>
-    groupAllWith fst >>>
-    map (toList >>> unzip >>> first head) >>>
-    Map.fromList >>>
-    (`Map.union` emptyQuart)
-
 makeQtree :: [Point] -> Qtree
 makeQtree [] = Qempty
 makeQtree [x] = Qleaf x
-makeQtree points = mkQ points
-
-mkQ =
-    (medX &&& id) >>>
-    (fst &&& uncurry splitAround) >>>
-    second (Map.map makeQtree >>> Map.elems) >>>
-    \(m,[ne,nw,se,sw])->Qtree {m=m, ne=ne, se=se, sw=sw, nw=nw}
+makeQtree points =
+    let m = meanp points
+        g n = makeQtree . filter ((==n).compQuarts m) $ points
+        bls = (,) <$> [False,True] <*> [False,True]
+        [ne,nw,se,sw] = g <$> bls
+    in Qtree {m=m, ne=ne, se=se, sw=sw, nw=nw}
 
 fielt = Map.fromList
     [((False,False),ne),((False,True),nw),((True,False),se),((True,True),sw)]
@@ -47,12 +36,18 @@ rangeQt low high (Qleaf x) = [x | isCovered low high x]
 rangeQt low high qt@(Qtree {m}) =
     let [(j,i),(h,k)] = compQuarts m <$> [low,high]
         hj = map (fielt!) . nub $ [(j,i),(h,i),(j,k),(h,k)]
-        ww = concatMap (rangeQt low high) $ hj <*> [qt]
-    in ww
+    in concatMap (rangeQt low high) $ hj <*> [qt]
 
 medX :: [Point] -> Point
 medX xs =
     let n = length xs `div` 2
         mx = (!!n).sort.map x $ xs
         my = (!!n).sort.map y $ xs
+    in Pointx mx my []
+
+meanp :: [Point] -> Point
+meanp xs =
+    let n = fromIntegral $ length xs
+        mx = (/n).sum.map x $ xs
+        my = (/n).sum.map y $ xs
     in Pointx mx my []
