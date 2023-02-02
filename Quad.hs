@@ -16,7 +16,8 @@ data Qtree =
     Qtree {m::Point,ne::Qtree,se::Qtree,sw::Qtree,nw::Qtree}
     deriving (Eq,Show)
 
-fielt = [((False,False),ne),((False,True),nw),((True,False),se),((True,True),sw)]
+bls = (,) <$> [False,True] <*> [False,True]
+fielt = zip bls [ne,nw,se,sw]
 
 compQuarts x y = (x <= y, other x <= other y)
 
@@ -26,7 +27,6 @@ makeQtree [x] = Qleaf x
 makeQtree points =
     let m = meanp points
         g n = makeQtree . filter ((==n).compQuarts m) $ points
-        bls = (,) <$> [False,True] <*> [False,True]
         [ne,nw,se,sw] = g <$> bls
     in Qtree {m=m, ne=ne, se=se, sw=sw, nw=nw}
 
@@ -37,10 +37,3 @@ rangeQt low high qt@(Qtree {m}) =
     let [(j,i),(h,k)] = compQuarts m <$> [low,high]
         hj = mapMaybe (`lookup` fielt) . nub $ [(j,i),(h,i),(j,k),(h,k)]
     in concatMap (rangeQt low high) $ hj <*> [qt]
-
-medX :: [Point] -> Point
-medX xs =
-    let n = length xs `div` 2
-        mx = (!!n).sort.map x $ xs
-        my = (!!n).sort.map y $ xs
-    in Pointx mx my []

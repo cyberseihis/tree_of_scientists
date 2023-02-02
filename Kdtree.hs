@@ -33,17 +33,8 @@ isCovered low high point =
     low <= point && point <= high &&
     other low <= other point && other point <= other high
 
-splitInHalf :: [a] -> ([a], [a])
-splitInHalf = uncurry splitAt . ((`div`2).length &&& id)
-
 splitDownHalf :: [a] -> ([a], [a])
 splitDownHalf = uncurry splitAt . (max 0.(- 1).(`div`2).length &&& id)
-
-splitApart xs =
-    let
-    (below, median : above) = splitInHalf . sort $ xs
-    (less,more) = break (>median) (below++above)
-    in (less,median,more)
 
 splitEarly xs =
     let
