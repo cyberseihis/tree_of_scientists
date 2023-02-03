@@ -6,6 +6,8 @@ import Kdtree
 import Test.QuickCheck
 import Data.List ((\\), singleton)
 import Quad
+import RangeTree
+import RTree
 import Control.Monad (liftM3)
 import Data.List.NonEmpty (groupAllWith, toList)
 import Control.Arrow (Arrow((&&&)))
@@ -17,6 +19,14 @@ instance GeneralTree Kd where
 instance GeneralTree Qtree where
     make = makeQtree . bundle
     querry = rangeQt
+
+instance GeneralTree TwoTree where
+    make = makeRange . bundle
+    querry = rangeRange
+
+instance GeneralTree RTree where
+    make = makeRtree 10 . bundle
+    querry = rangeRt
 
 instance Arbitrary Point where
     arbitrary = liftM3 Pointx arbitrary arbitrary (singleton <$> arbitrary)
@@ -58,6 +68,8 @@ tsts x = do
 mySuite = do
     tsts Kempty
     tsts Qempty
+    tsts Tnempty
+    tsts Rempty
 
 samesame xs ys = null (xs \\ ys) && null (ys \\ xs)
 

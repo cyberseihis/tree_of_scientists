@@ -4,7 +4,7 @@ import Control.Arrow (Arrow((&&&), second))
 import Data.List (nub, sortOn, singleton)
 import Data.List.Split (splitPlaces)
 
-data Mbr = Mbr {sx::Int,sy::Int,mx::Int,my::Int} deriving (Eq,Show)
+data Mbr = Mbr {sx::Double,sy::Double,mx::Double,my::Double} deriving (Eq,Show)
 data RTree = Rempty | Rleaf Point | Rnode Mbr [RTree] deriving (Eq,Show)
 
 doubleMbr :: Point -> Point -> Mbr

@@ -23,7 +23,7 @@ extra-source-files: CHANGELOG.md
 
 
 library
-    other-modules: Kdtree, KdTest, Quad
+    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree
     build-depends:    
         base , containers, QuickCheck, data-hash, split, unordered-containers
     ghc-options: -O2 -threaded "-with-rtsopts=-N"
