@@ -1,40 +1,31 @@
 {-# LANGUAGE RecordWildCards #-}
 module RangeTree (TwoTree (..),makeRange,rangeRange) where
 import Kdtree
-import Control.Arrow ((>>>))
-import Data.List (sort, group, partition, singleton, groupBy, sortOn)
-import Data.Maybe (mapMaybe)
 
 data TwoTree =
     Tnempty | Tleaf { tn :: Point, tdata :: [Point], tside :: TwoTree} |
-    Tnode {
-        tn :: Point,
-        tside :: TwoTree,
-        tless :: TwoTree,
+    Tnode { tn :: Point, tside :: TwoTree, tless :: TwoTree,
         tmore :: TwoTree} deriving (Eq,Show)
-
-makeRange :: [Point] -> TwoTree
-makeRange = makeTwo
 
 rangeRange :: Point -> Point -> TwoTree -> [Point]
 rangeRange low high = rangeTwo low high Idk
 
 allSorted :: Ord a => [a] -> Bool
 allSorted = and . (zipWith (<=) <*> tail)
-isK xs = allSorted xs && allSorted (reverse xs)
 
-makeTwo [] = Tnempty
-makeTwo [x] = Tleaf x [x] (makeSide [x])
-makeTwo xs@(p@(Pointy {}):_)
-    | isK xs = Tleaf p xs Tnempty
-makeTwo xs =
+makeRange :: [Point] -> TwoTree
+makeRange [] = Tnempty
+makeRange [x] = Tleaf x [x] (makeSide [x])
+makeRange xs@(p@(Pointy {}):_)
+    | allSorted xs && allSorted (reverse xs) = Tleaf p xs Tnempty
+makeRange xs =
     Tnode median (makeSide xs) mkLess mkMore where
     (less, median, more) = splitEarly xs
-    mkLess = makeTwo (median:less)
-    mkMore = makeTwo more
+    mkLess = makeRange (median:less)
+    mkMore = makeRange more
 
 makeSide :: [Point] -> TwoTree
-makeSide = makeTwo . map other . filter isx
+makeSide = makeRange . map other . filter isx
     where isx Pointx {} = True
           isx _ = False 
 
