@@ -6,9 +6,9 @@ import Data.List (sort, group, partition, singleton, groupBy, sortOn)
 import Data.Maybe (mapMaybe)
 
 data TwoTree =
-    Tnempty | Tleaf { tn :: Bunch, tside :: TwoTree} |
+    Tnempty | Tleaf { tn :: Point, tdata :: [Point], tside :: TwoTree} |
     Tnode {
-        tn :: Bunch,
+        tn :: Point,
         tside :: TwoTree,
         tless :: TwoTree,
         tmore :: TwoTree} deriving (Eq,Show)
@@ -22,40 +22,45 @@ instance Ord Bunch where
     Bunch (x:_) <= Bunch (y:_) = x <= y
 
 makeRange :: [Point] -> TwoTree
-makeRange = matchUp x >>> makeTwo
+makeRange = makeTwo
 
 rangeRange :: Point -> Point -> TwoTree -> [Point]
-rangeRange low high =
-    concatMap unBunch . rangeTwo (Bunch [low]) (Bunch [high]) Idk
+rangeRange low high = rangeTwo low high Idk
 
 bother :: Bunch -> Bunch
 bother = Bunch . map other . unBunch
 
 matchUp x = sortOn x >>> groupBy (\pa pb->x pa == x pb) >>> map Bunch
 
+allSorted :: Ord a => [a] -> Bool
+allSorted = and . (zipWith (<=) <*> tail)
+isK xs = allSorted xs && allSorted (reverse xs)
+
 makeTwo [] = Tnempty
-makeTwo [x] = Tleaf x (makeSide [x])
+makeTwo [x] = Tleaf x [x] (makeSide [x])
+makeTwo xs@(p@(Pointy {}):_)
+    | isK xs = Tleaf p xs Tnempty
 makeTwo xs =
     Tnode median (makeSide xs) mkLess mkMore where
     (less, median, more) = splitEarly xs
     mkLess = makeTwo (median:less)
     mkMore = makeTwo more
 
-makeSide :: [Bunch] -> TwoTree
-makeSide = makeTwo . matchUp y . mapMaybe sother . concatMap unBunch
-    where sother p@Pointx {} = Just $ other p
-          sother _ = Nothing
+makeSide :: [Point] -> TwoTree
+makeSide = makeTwo . map other . filter isx
+    where isx Pointx {} = True
+          isx _ = False 
 
 data Farse = Idk | Lft | Rgt | Dwn deriving (Eq)
 
-rangeTwo :: Bunch -> Bunch -> Farse -> TwoTree -> [Bunch]
+rangeTwo :: Point -> Point -> Farse -> TwoTree -> [Point]
 rangeTwo _ _ _ Tnempty = []
-rangeTwo low@(Bunch(Pointx {}:_)) high Dwn t =
-    rangeTwo (bother low) (bother high) Dwn . tside $ t
-rangeTwo low high Dwn Tleaf {..} =[tn|(low <= tn) && (high >= tn)]
+rangeTwo low@Pointx {} high Dwn t =
+    rangeTwo (other low) (other high) Dwn . tside $ t
+rangeTwo low high Dwn Tleaf {..} =concat[tdata|(low <= tn) && (high >= tn)]
 rangeTwo low high _ Tleaf {..} =
     if (low <= tn) && (high >= tn)
-    then rangeTwo (bother low) (bother high) Dwn tside
+    then rangeTwo (other low) (other high) Dwn tside
     else []
 rangeTwo low high lor Tnode {..}
     | high <= tn = rangeTwo low high lor tless
