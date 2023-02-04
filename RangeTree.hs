@@ -1,6 +1,7 @@
 {-# LANGUAGE RecordWildCards #-}
 module RangeTree (TwoTree (..),makeRange,rangeRange) where
 import Kdtree
+import Data.List (nub)
 
 data TwoTree =
     Tnempty | Tleaf { tn :: Point, tdata :: [Point], tside :: TwoTree} |
@@ -10,15 +11,16 @@ data TwoTree =
 rangeRange :: Point -> Point -> TwoTree -> [Point]
 rangeRange low high = rangeTwo low high Idk
 
-allSorted :: Ord a => [a] -> Bool
-allSorted = and . (zipWith (<=) <*> tail)
+
+isK xs@(Pointy {}:_) = (==1) . length . nub . map y $ xs
+isK _ = False
 
 makeRange :: [Point] -> TwoTree
 makeRange [] = Tnempty
 makeRange [x] = Tleaf x [x] (makeSide [x])
-makeRange xs@(p@(Pointy {}):_)
-    | allSorted xs && allSorted (reverse xs) = Tleaf p xs Tnempty
-makeRange xs =
+makeRange xs
+    | isK xs = Tleaf (head xs) xs Tnempty
+    | otherwise =
     Tnode median (makeSide xs) mkLess mkMore where
     (less, median, more) = splitEarly xs
     mkLess = makeRange (median:less)
