@@ -13,13 +13,13 @@ rangeRange low high = rangeTwo low high Idk
 
 
 isK xs@(Pointy {}:_) = (==1) . length . nub . map y $ xs
-isK _ = False
+isK xs = (==1) . length . nub . map x $ xs
 
 makeRange :: [Point] -> TwoTree
 makeRange [] = Tnempty
 makeRange [x] = Tleaf x [x] (makeSide [x])
 makeRange xs
-    | isK xs = Tleaf (head xs) xs Tnempty
+    | isK xs = Tleaf (head xs) xs (makeSide xs)
     | otherwise =
     Tnode median (makeSide xs) mkLess mkMore where
     (less, median, more) = splitEarly xs
