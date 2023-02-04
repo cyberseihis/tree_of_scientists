@@ -25,7 +25,7 @@ instance GeneralTree TwoTree where
     querry = rangeRange
 
 instance GeneralTree RTree where
-    make = makeRtree 10 . bundle
+    make = makeRtree . bundle
     querry = rangeRt
 
 instance Arbitrary Point where

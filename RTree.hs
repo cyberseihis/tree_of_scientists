@@ -10,11 +10,11 @@ data RTree = Rempty | Rleaf Point | Rnode Mbr [RTree] deriving (Eq,Show)
 doubleMbr :: Point -> Point -> Mbr
 doubleMbr (Pointx sx sy _) (Pointx mx my _) = Mbr sx sy mx my
 
-makeRtree :: Int -> [Point] -> RTree
-makeRtree _ [] = Rempty
-makeRtree _ [x] = Rleaf x
-makeRtree fanout points =
-    Rnode (bindRect points) . map (makeRtree fanout) . cutUp fanout $ points
+makeRtree :: [Point] -> RTree
+makeRtree [] = Rempty
+makeRtree [x] = Rleaf x
+makeRtree points =
+    Rnode (bindRect points) . map makeRtree . cutUp $ points
 
 rangeRt :: Point -> Point -> RTree -> [Point]
 rangeRt _ _ Rempty = []
@@ -39,8 +39,8 @@ badSort points = sortOn dim points
     where (nx,ny) = uniqz points
           dim = if nx>ny then x else y
 
-cutUp n xs =
+cutUp xs =
     let x = length xs
-        (d,m) = divMod x n
-        ar = zipWith (+) (replicate n d) $ replicate m 1 ++ repeat 0
+        (d,m) = divMod x 10
+        ar = zipWith (+) (replicate 10 d) $ replicate m 1 ++ repeat 0
     in takeWhile (not.null) $ splitPlaces ar xs
