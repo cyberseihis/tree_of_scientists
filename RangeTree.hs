@@ -3,19 +3,13 @@ module RangeTree (TwoTree (..),makeRange,rangeRange) where
 import Kdtree
 import Control.Arrow ((>>>))
 import Data.List (sort, group, partition, singleton, groupBy, sortOn)
-
-data OneTree =
-    Onempty | Oleaf Bunch |
-    Onode {
-        n :: Bunch,
-        less :: OneTree,
-        more :: OneTree} deriving (Eq,Show)
+import Data.Maybe (mapMaybe)
 
 data TwoTree =
-    Tnempty | Tleaf { tn :: Bunch, tside :: OneTree} |
+    Tnempty | Tleaf { tn :: Bunch, tside :: TwoTree} |
     Tnode {
         tn :: Bunch,
-        tside :: OneTree,
+        tside :: TwoTree,
         tless :: TwoTree,
         tmore :: TwoTree} deriving (Eq,Show)
 
@@ -32,22 +26,12 @@ makeRange = matchUp x >>> makeTwo
 
 rangeRange :: Point -> Point -> TwoTree -> [Point]
 rangeRange low high =
-    let ll = Bunch [low]
-        hh = Bunch [high]
-    in concatMap unBunch . rangeTwo ll hh Idk
+    concatMap unBunch . rangeTwo (Bunch [low]) (Bunch [high]) Idk
 
 bother :: Bunch -> Bunch
-bother (Bunch x) = Bunch . map other $ x
+bother = Bunch . map other . unBunch
 
 matchUp x = sortOn x >>> groupBy (\pa pb->x pa == x pb) >>> map Bunch
-
-makeOne [] = Onempty
-makeOne [x] = Oleaf x
-makeOne xs =
-    Onode median mkLess mkMore where
-    (less, median, more) = splitEarly xs
-    mkLess = makeOne (median:less)
-    mkMore = makeOne more
 
 makeTwo [] = Tnempty
 makeTwo [x] = Tleaf x (makeSide [x])
@@ -57,29 +41,26 @@ makeTwo xs =
     mkLess = makeTwo (median:less)
     mkMore = makeTwo more
 
-makeSide :: [Bunch] -> OneTree
-makeSide = makeOne . matchUp y . map other . concatMap unBunch
+makeSide :: [Bunch] -> TwoTree
+makeSide = makeTwo . matchUp y . mapMaybe sother . concatMap unBunch
+    where sother p@Pointx {} = Just $ other p
+          sother _ = Nothing
 
-rangeOne _ _ Onempty = []
-rangeOne low high (Oleaf n) = [n|(low <= n) && (high >= n)]
-rangeOne low high o@(Onode {..})
-    | (low <= n) && (high >= n) =
-        rangeOne low high less ++ rangeOne low high more
-    | low <= n = rangeOne low high less
-    | otherwise = rangeOne low high more
-
-data Farse = Idk | Lft | Rgt deriving (Eq)
+data Farse = Idk | Lft | Rgt | Dwn deriving (Eq)
 
 rangeTwo :: Bunch -> Bunch -> Farse -> TwoTree -> [Bunch]
 rangeTwo _ _ _ Tnempty = []
-rangeTwo low@(Bunch(Pointy {}:_)) high _ t = rangeOne low high . tside $ t
+rangeTwo low@(Bunch(Pointx {}:_)) high Dwn t =
+    rangeTwo (bother low) (bother high) Dwn . tside $ t
+rangeTwo low high Dwn Tleaf {..} =[tn|(low <= tn) && (high >= tn)]
 rangeTwo low high _ Tleaf {..} =
     if (low <= tn) && (high >= tn)
-    then rangeOne (bother low) (bother high) tside
+    then rangeTwo (bother low) (bother high) Dwn tside
     else []
 rangeTwo low high lor Tnode {..}
     | high <= tn = rangeTwo low high lor tless
-    | low > tn= rangeTwo low high lor tmore
+    | low > tn   = rangeTwo low high lor tmore
+    | lor == Dwn = rangeTwo low high lor tless ++ rangeTwo low high lor tmore
     | lor == Idk = rangeTwo low high Lft tless ++ rangeTwo low high Rgt tmore
-    | lor == Rgt = rangeTwo (bother low) (bother high) lor tless ++ rangeTwo low high lor tmore
-    | otherwise = rangeTwo (bother low) (bother high) lor tmore ++ rangeTwo low high lor tless
+    | lor == Rgt = rangeTwo low high Dwn tless ++ rangeTwo low high lor tmore
+    | otherwise  = rangeTwo low high Dwn tmore ++ rangeTwo low high lor tless
