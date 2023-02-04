@@ -1,5 +1,4 @@
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE NamedFieldPuns #-}
 module RangeTree (TwoTree (..),makeRange,rangeRange) where
 import Kdtree
 import Control.Arrow ((>>>))
@@ -32,11 +31,10 @@ makeRange :: [Point] -> TwoTree
 makeRange = matchUp x >>> makeTwo
 
 rangeRange :: Point -> Point -> TwoTree -> [Point]
-rangeRange low high tree =
+rangeRange low high =
     let ll = Bunch [low]
         hh = Bunch [high]
-        resB = rangeTwo ll hh Idk tree
-    in concatMap unBunch resB
+    in concatMap unBunch . rangeTwo ll hh Idk
 
 bother :: Bunch -> Bunch
 bother (Bunch x) = Bunch . map other $ x
@@ -50,7 +48,6 @@ makeOne xs =
     (less, median, more) = splitEarly xs
     mkLess = makeOne (median:less)
     mkMore = makeOne more
-
 
 makeTwo [] = Tnempty
 makeTwo [x] = Tleaf x (makeSide [x])
@@ -66,7 +63,7 @@ makeSide = makeOne . matchUp y . map other . concatMap unBunch
 rangeOne _ _ Onempty = []
 rangeOne low high (Oleaf n) = [n|(low <= n) && (high >= n)]
 rangeOne low high o@(Onode {..})
-    | isSplitnode low high o =
+    | (low <= n) && (high >= n) =
         rangeOne low high less ++ rangeOne low high more
     | low <= n = rangeOne low high less
     | otherwise = rangeOne low high more
@@ -86,5 +83,3 @@ rangeTwo low high lor Tnode {..}
     | lor == Idk = rangeTwo low high Lft tless ++ rangeTwo low high Rgt tmore
     | lor == Rgt = rangeTwo (bother low) (bother high) lor tless ++ rangeTwo low high lor tmore
     | otherwise = rangeTwo (bother low) (bother high) lor tmore ++ rangeTwo low high lor tless
-
-isSplitnode low high Onode {n} = (low <= n) && (high >= n)
