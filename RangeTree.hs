@@ -13,24 +13,11 @@ data TwoTree =
         tless :: TwoTree,
         tmore :: TwoTree} deriving (Eq,Show)
 
-newtype Bunch = Bunch {unBunch:: [Point]} deriving (Show)
-
-instance Eq Bunch where
-    Bunch (x:_) == Bunch (y:_) = x <= y && x >= y
-    
-instance Ord Bunch where
-    Bunch (x:_) <= Bunch (y:_) = x <= y
-
 makeRange :: [Point] -> TwoTree
 makeRange = makeTwo
 
 rangeRange :: Point -> Point -> TwoTree -> [Point]
 rangeRange low high = rangeTwo low high Idk
-
-bother :: Bunch -> Bunch
-bother = Bunch . map other . unBunch
-
-matchUp x = sortOn x >>> groupBy (\pa pb->x pa == x pb) >>> map Bunch
 
 allSorted :: Ord a => [a] -> Bool
 allSorted = and . (zipWith (<=) <*> tail)
