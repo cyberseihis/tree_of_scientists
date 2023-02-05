@@ -11,6 +11,7 @@ import RTree
 import Control.Monad (liftM3)
 import Data.List.NonEmpty (groupAllWith, toList)
 import Control.Arrow (Arrow((&&&)))
+import Debug.Trace (traceShow)
 
 instance GeneralTree Kd where
     make = makeKd . bundle
@@ -29,7 +30,8 @@ instance GeneralTree RTree where
     querry = rangeRt
 
 instance Arbitrary Point where
-    arbitrary = liftM3 Pointx arbitrary arbitrary (singleton <$> arbitrary)
+    arbitrary = liftM3 Pointx (fromIntegral <$> choose(0::Int,25))
+        (fromIntegral <$> choose(0::Int,13)) (singleton <$> arbitrary)
 
 bundle :: [Point] -> [Point]
 bundle xs =
@@ -44,6 +46,7 @@ class GeneralTree a where
     querry :: Point -> Point -> a -> [Point]
     prop_all_in :: a -> Point -> Point -> [Point] -> Property
     prop_all_in _ pl ph xs = smaller pl ph ==>
+        -- traceShow xs $
         all (isCovered pl ph . normaliseToX) . querry pl ph $ (make xs::a)
     prop_all_minmax :: a -> [Point] -> Bool
     prop_all_minmax  _ xs =

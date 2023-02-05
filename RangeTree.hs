@@ -1,7 +1,9 @@
 {-# LANGUAGE RecordWildCards #-}
+{-# OPTIONS_GHC -Wno-deferred-out-of-scope-variables #-}
 module RangeTree (TwoTree (..),makeRange,rangeRange) where
 import Kdtree
-import Data.List (nub)
+import Data.List (nub,partition)
+import Debug.Trace (traceShow, trace)
 
 data TwoTree =
     Tnempty | Tleaf { tn :: Point, tdata :: [Point], tside :: TwoTree} |
@@ -17,13 +19,13 @@ isK xs = (==1) . length . nub . map x $ xs
 
 makeRange :: [Point] -> TwoTree
 makeRange [] = Tnempty
-makeRange [x] = Tleaf x [x] (makeSide [x])
 makeRange xs
     | isK xs = Tleaf (head xs) xs (makeSide xs)
     | otherwise =
-    Tnode median (makeSide xs) mkLess mkMore where
-    (less, median, more) = splitEarly xs
-    mkLess = makeRange (median:less)
+    Tnode mid (makeSide xs) mkLess mkMore where
+    mid = meanp xs
+    (less,more) = partition (<=mid) xs
+    mkLess = makeRange less
     mkMore = makeRange more
 
 makeSide :: [Point] -> TwoTree
@@ -37,7 +39,7 @@ rangeTwo :: Point -> Point -> Farse -> TwoTree -> [Point]
 rangeTwo _ _ _ Tnempty = []
 rangeTwo low@Pointx {} high Dwn t =
     rangeTwo (other low) (other high) Dwn . tside $ t
-rangeTwo low high Dwn Tleaf {..} =concat[tdata|(low <= tn) && (high >= tn)]
+rangeTwo low high Dwn Tleaf {..} = concat[tdata|(low <= tn) && (high >= tn)]
 rangeTwo low high _ Tleaf {..} =
     if (low <= tn) && (high >= tn)
     then rangeTwo (other low) (other high) Dwn tside

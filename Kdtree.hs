@@ -8,8 +8,8 @@ data Kd = Kempty | Kleaf Point | Kd Point Kd Kd deriving (Eq, Show)
 data Point = Pointx {x :: Double, y :: Double, stuff :: [Int]} | Pointy {x :: Double, y :: Double, stuff :: [Int]} deriving (Eq, Show)
 
 instance Ord Point where
-    (Pointx x _ _) <= (Pointx z _ _) = x <= z
-    (Pointy _ y _) <= (Pointy _ z _) = y <= z
+    (Pointx x _ _) `compare` (Pointx z _ _) = x `compare` z
+    (Pointy _ y _) `compare` (Pointy _ z _) = y `compare` z
 
 other (Pointx x y i) = Pointy x y i
 other (Pointy x y i) = Pointx x y i
