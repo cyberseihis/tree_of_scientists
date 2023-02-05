@@ -21,10 +21,17 @@ maintainer:         mcraftdm@gmail.com
 -- category:
 extra-source-files: CHANGELOG.md
 
+executable Prof
+    main-is: Profil.hs
+    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree
+    build-depends:    
+        base , containers, QuickCheck, data-hash, split, deepseq, unordered-containers, criterion
+    ghc-options: -O2 -threaded "-with-rtsopts=-N"
+    default-language: Haskell2010
 
 library
     other-modules: Kdtree, KdTest, Quad, RangeTree, RTree
     build-depends:    
-        base , containers, QuickCheck, data-hash, split, unordered-containers
+        base , containers, QuickCheck, data-hash, split, deepseq, unordered-containers, criterion
     ghc-options: -O2 -threaded "-with-rtsopts=-N"
     default-language: Haskell2010
