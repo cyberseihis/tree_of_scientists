@@ -1,5 +1,0 @@
-tree time alloc
- KTREE 21.7   16.4
- QUADTREE 42.8   53.6
- R-TREE 17.4   15.2
- RANGETREE 17.4   14.7
