@@ -17,56 +17,90 @@
 να είναι >20%. Αυτό γίνεται με προϋπολογισμένα σύνολα από hash λέξεων τις εκπαίδευσης.
 Τέλος τυπώνεται το επώνυμο και αριθμός βραβείων για κάθε επιστήμονα του ζεύγους.
 
-Perigrafi dentron
+Περιγραφή δέντρων
 
-Kathe dentro exei mia synartisei kataskeyis pou dexetai mia lista me Point kai ftiaxnei ena dentro pou ta periexei
-kai mia synartisi gia range querry pou dexetai dio Point pou anaparistoun to elaxisto kai megisto simeio tou range
-kai to dentro kai epistrefei ola ta Point sto dentro pou perilambanontai sto range. Ayta ta dio Point tha anaferontai os
-low kai high antistoixa.
+Κάθε δέντρο έχει μια συναρτήση κατασκευής που δέχεται μια λίστα με Point και φτιάχνει ένα δέντρο που τα περιέχει
+και μια συνάρτηση για range query που δέχεται δυο Point που αναπαριστούν το ελάχιστο και μέγιστο σημείο του range
+και το δέντρο και επιστρέφει όλα τα Point στο δέντρο που περιλαμβάνονται στο range. Αυτά τα δυο Point θα αναφέρονται ως
+low και high αντίστοιχα.
 
 Kdtree
 
-Kataskeyi : Oi times apothikeyonati sta fylla. Ta Point xorizontai aristera kai dexia me basi to an einai 
-mikrotera / isa i megalitera apo to meso oro ton Point tis listas. O kombos apokta ti timi tou mesou orou ton Point.
-Sti sinexeia gia kathe kateytinsi h kataskeyi epanalambanetai me ti sigrisi na ginetai se diaforetiki diastasi apo to proigoumeno epipedo.
-Otan menei mono ena Point sti list dimiourgitai filo.
+Κατασκευή : Οι τιμές αποθηκεύονται στα φύλλα. Τα Point χωρίζονται αριστερά και δεξιά με βάση το αν είναι 
+μικρότερα / ισα η μεγαλύτερα από το μέσο ορο των Point τις λίστας. Ο κόμβος αποκτά τι τιμή του μέσου ορου τον Point.
+Στη συνεχεια για κάθε κατεύθινση η κατασκευή επαναλαμβάνεται με τη σύγκριση να γίνεται σε διαφορετική διάσταση από το προηγούμενο επίπεδο.
+Όταν μένει μονο ένα Point στη list δημιουργείται φύλλο.
 
-Anazitisi : I anazitisi se filo epistrefei ti timi tou filou an einai entos tou range. I anazitisi se kombo epistrefei tin enosi
-tis anazitisis sto aristero paidi an o kombos einai megaliteros tou low kai sto dexi an einai mikroteros tou high.
-I diastasi stin opoia ginetai i sigrisi allazei kathe epipedo.
+Αναζήτηση : Η αναζήτηση σε φίλο επιστρέφει τι τιμή του φύλλου αν είναι εντός του range. Η αναζήτηση σε κόμβο επιστρέφει την ένωση
+τις αναζήτησης στο αριστερό παιδί αν ο κόμβος είναι μεγαλύτερος του low και στο δεξί αν είναι μικρότερος του high.
+Η διάσταση στην οποια γίνεται η σύγκριση αλλάζει κάθε επίπεδο.
 
 QuadTree
 
-Kataskeyi : Ta Point xorizontai sta 4 me basi se poio tetartimorio briskontai se sxesi me to meso Point kai ena ypodentro 
-dimiourgitai gia kathe tetartimorio.
+Κατασκευή : Τα Point χωρίζονται στα 4 με βάση σε ποιο τεταρτημόριο βρίσκονται σε σχέση με το μέσο Point και ένα υποδεντρο 
+δημιουργείται για κάθε τεταρτημόριο.
 
-Anazitisi : Epistrefetai i enosi ton anazitiseon sta ypodentra pou antistoixoun se ola ta tetartimoria pou brisketai
-kapoia gonia tou orthogoniou pou orizei to range.
+Αναζήτηση : Επιστρέφεται η ένωση τον αναζητήσεων στα υπόδεντρα που αντιστοιχούν σε όλα τα τεταρτημόρια που βρίσκεται
+κάποια γωνια του ορθογώνιου που ορίζει το range.
 
 RangeTree 
 
-Kataskeyi : Sto dentro tis protis diastasis kathe kombos xorizei ta Point se dexia kai aristera ypodentra me basi sigrisi me to
-meso Point stin proti diastasi kai episis pernaei ola ta Point se ena katheto ypodentro gia sygkrisi stin alli diastasi. To dentro 
-mporei na min einai isozigismeno se kapoies periptoseis logo tou oti i sigrisi ginetai me basi to meso oro pou borei na min 
-diairei ta simeia akribos sta dio. Peiramatika ayto den exei arnitikes epiptoseis stin apodosi.
-Otan ola ta Point tis listas exoun tin idia timi sti proti diastasi tote mono to katheto ypodentro dimiourgitai.
-Sto katheto ipodentro kathe kombos xorizei ta Point se dexia kai aristera ypodentra me basi sigrisi me to
-meso Point stin deyteri diastasi.
-Otan ola ta Point tis listas exoun tin idia timi sti deyteri diastasi tote dimiourgitai filo me ola ta Point.
+Κατασκευή : Στο δέντρο τις πρώτης διάστασης κάθε κόμβος χωρίζει τα Point σε δεξιά και αριστερά υπόδεντρα με βάση σύγκριση με το
+μέσο Point στην πρώτη διάσταση και επίσης περνάει όλα τα Point σε ένα κάθετο υποδεντρο για σύγκριση στην άλλη διάσταση. Το δέντρο 
+μπορεί να μην είναι ισοζυγισμένο σε κάποιες περιπτώσεις λόγω του ότι η σύγκριση γίνεται με βάση το μέσο ορο που μπορεί να μην 
+διαιρει τα σημεία ακριβώς στα δυο. Πειραματικά αυτό δεν έχει αρνητικές επιπτώσεις στην απόδοση.
+Όταν όλα τα Point τις λίστας έχουν την ίδια τιμή στη πρώτη διάσταση τότε μονο το κάθετο "υποδεντρο" δημιουργείται.
+Στο κάθετο "ιποδεντρο" κάθε κόμβος χωρίζει τα Point σε δεξιά και αριστερά υποδεντρα με βάση σύγκριση με το
+μέσο Point στην δεύτερη διάσταση.
+Όταν όλα τα Point τις λίστας έχουν την ίδια τιμή στη δεύτερη διάσταση τότε δημιουργείται φίλο με όλα τα Point.
 
-Anazitisi : Anafero parakato simainei epistrefo to apotelesma tis anazitisis sto katheto ipodentro.
-Arxika brisketai o anoteros kombos pou einai entos tou range, pou tha einai o elaxistos koinos apogonos
-ton simeion entos tou range. Apo ekei i anazitisi xorizetai stin aristeri pleyra, opou to dexi ypodentro anaferetai kathe fora
-pou to low einai mikrotero apo ton kombo, kai tin dexia pleyra opou to simetriko simbenei.
-Otan mia apo tis dio pleyres ftasei se kombo me mono katheto ypodentro ton anaferei an einai entos tou range.
-Sta katheta ypodentra i anazitisi ginetai me paromio tropo alla mono me aristero kai dexio ipodentro kai me sigrisi stin alli diastasi.
+Αναζήτηση : Αναφέρω παρακάτω σημαίνει επιστρέφω το αποτέλεσμα τις αναζήτησης στο κάθετο ιποδεντρο.
+Αρχικά βρίσκεται ο ανώτερος κόμβος που είναι εντός του range, που θα είναι ο ελάχιστος κοινός απόγονος
+τον σημείων εντός του range. Από εκεί η αναζήτηση χωρίζεται στην αριστερή πλευρά, όπου το δεξί υποδεντρο αναφέρεται κάθε φορα
+που το low είναι μικρότερο από τον κόμβο, και την δεξιά πλευρά όπου το συμμετρικό συμβαίνει.
+Όταν μια από τις δυο πλευρές φτάσει σε κόμβο με μονο κάθετο υποδεντρο τον αναφέρει αν είναι εντός του range.
+Στα κάθετα υποδεντρα η αναζήτηση γίνεται με παρόμοιο τρόπο αλλα μονο με αριστερό και δεξιό ιποδεντρο και με σύγκριση στην άλλη διάσταση.
 
 R-Tree
 
-Kataskeyi : O kombos pairnei os timi to MBR pou perilambanei ola ta Point tis listas.
-Ta point taxinomountai me basi tin diastasi stin opoia exoun tis perisoteres monadikes times.
-Epeita xorizontai se osa ypodentra oso to elaxisto tou arithmou Point kai tou fanout. Otan mono ena Point menei
-dimiourgitai filo.
+Κατασκευή : Ο κόμβος παίρνει ως τιμή το MBR που περιλαμβάνει όλα τα Point τις λίστας.
+Τα point ταξινομούνται με βάση την διάσταση στην οποια έχουν τις περισσότερες μοναδικές τιμές.
+Έπειτα χωρίζονται σε όσα υποδεντρα όσο το ελάχιστο του αριθμού Point και του fanout. Όταν μονο ένα Point μένει
+δημιουργείται φίλο.
 
-Anazitisi : Epistrefetai i enosi tis anazitisis se ola ta ypodentra pou exoun MBR pou temnei to range.
+Αναζήτηση : Επιστρέφεται η ένωση τις αναζήτησης σε όλα τα υποδεντρα που έχουν MBR που τέμνει το range.
 
+Axiologisi kai sigkrisi
+
+Arxika dimiourgitai ena dentro kathe typou apo mia lista me 100 tixaia Point. Se kathe dentro ginetai enas megalos arithmos apo tixaia queries
+kai metrietai i apodosi tous. Oi anazitiseis sta dentra axiologithikan xoris to LSH kathos ayto paramenei stathero se kathe periptosi.
+O xronos pou pernei to meso query se kathe dentro einai:
+355 μs 355 μs 364 μs 376 μs
+Poio analytika statistika briskontai sto benchmarks.html (Oi xronoi ekei anaferontai se batches ton 100 queries).
+
+Testing
+
+Oi 3 idiotites pou testarontai einai:
+1. Kathe Point pou epistrefetai apo anazitisi brisketai entos tou range
+2. Anazitisi me range pou kaliptei kathe pithano simeio epistrefei ola ta
+Point tou dentrou
+3. I anazitisi se dentro epistrefei ta idia Point me to na elegxontai ena-ena gia to
+an briskontai entos tou range. Ayti i idiotita egiatai tin orthotita kai plirotita
+ton apotelesmaton.
+
+Kathe idiotita elegxetai gia kathe typo dentrou me 100 tyxaia paragomena testcases.
+
+LSH
+
+Ypologizetai to hash kathe lexis me 100 diaforetika noumera.
+Gia kathe noumero kai kathe eggrafo ypologizetai to elaxisto hash
+olon ton lexeon sto eggrafo. Etsi dimiourgitai to minhash matrix.
+Ana dio oi times se kathe stili tou minhash matrix enonontai 
+se ena hash. To apotelesma einai ypografes LSH me 50 bands kai 2 grammes
+ana band. Oi times 2 kai 50 vrethikan peiramatika na exoun apodexti
+apodosi gia jaccard similarity 20% se sigkrisi me alles times.
+Sto LSH xrisimopoiountai 10000 koubades.
+
+Gia kathe grammi sto matrix ton ypografon ton epistimonon pou epestrese
+i anazitisi sto dentro xrisimopoiitai hashmap gia na vrethoun oi stiles pou
+exoun koina band. Epistrefetai kathe zeygos pou brisketai me ayton ton tropo.

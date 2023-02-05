@@ -46,7 +46,6 @@ class GeneralTree a where
     querry :: Point -> Point -> a -> [Point]
     prop_all_in :: a -> Point -> Point -> [Point] -> Property
     prop_all_in _ pl ph xs = smaller pl ph ==>
-        -- traceShow xs $
         all (isCovered pl ph . normaliseToX) . querry pl ph $ (make xs::a)
     prop_all_minmax :: a -> [Point] -> Bool
     prop_all_minmax  _ xs =
