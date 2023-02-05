@@ -33,15 +33,6 @@ isCovered low high point =
     low <= point && point <= high &&
     other low <= other point && other point <= other high
 
-splitDownHalf :: [a] -> ([a], [a])
-splitDownHalf = uncurry splitAt . (max 0.(- 1).(`div`2).length &&& id)
-
-splitEarly xs =
-    let
-    (below, median : above) = splitDownHalf . sort $ xs
-    (less,more) = break (>median) (below++above)
-    in (less,median,more)
-
 meanp :: [Point] -> Point
 meanp xs =
     let n = fromIntegral $ length xs
