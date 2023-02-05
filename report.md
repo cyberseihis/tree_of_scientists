@@ -70,37 +70,37 @@ R-Tree
 
 Αναζήτηση : Επιστρέφεται η ένωση τις αναζήτησης σε όλα τα υποδεντρα που έχουν MBR που τέμνει το range.
 
-Axiologisi kai sigkrisi
+Αξιολόγηση και σύγκριση
 
-Arxika dimiourgitai ena dentro kathe typou apo mia lista me 100 tixaia Point. Se kathe dentro ginetai enas megalos arithmos apo tixaia queries
-kai metrietai i apodosi tous. Oi anazitiseis sta dentra axiologithikan xoris to LSH kathos ayto paramenei stathero se kathe periptosi.
-O xronos pou pernei to meso query se kathe dentro einai:
+Αρχικά δημιουργείται ένα δέντρο κάθε τύπου από μια λίστα με 100 τυχαία Point. Σε κάθε δέντρο γίνεται ένας μεγάλος αριθμός από τυχαία queries
+και μετριέται η απόδοση τους. Οι αναζητήσεις στα δέντρα αξιολογήθηκαν χωρίς το LSH καθώς αυτό παραμένει σταθερό σε κάθε περίπτωση.
+Ο χρόνος που παίρνει το μέσο query σε κάθε δέντρο είναι:
 355 μs 355 μs 364 μs 376 μs
-Poio analytika statistika briskontai sto benchmarks.html (Oi xronoi ekei anaferontai se batches ton 100 queries).
+Ποιο αναλυτικά στατιστικά βρίσκονται στο benchmarks.html (Οι χρόνοι εκεί αναφέρονται σε batches των 100 queries).
 
 Testing
 
-Oi 3 idiotites pou testarontai einai:
-1. Kathe Point pou epistrefetai apo anazitisi brisketai entos tou range
-2. Anazitisi me range pou kaliptei kathe pithano simeio epistrefei ola ta
-Point tou dentrou
-3. I anazitisi se dentro epistrefei ta idia Point me to na elegxontai ena-ena gia to
-an briskontai entos tou range. Ayti i idiotita egiatai tin orthotita kai plirotita
-ton apotelesmaton.
+Οι 3 ιδιότητες που τεστάρονται είναι:
+1. Κάθε Point που επιστρέφεται από αναζήτηση βρίσκεται εντός του range
+2. Αναζήτηση με range που καλύπτει κάθε πιθανό σημείο επιστρέφει όλα τα
+Point του δέντρου
+3. Η αναζήτηση σε δέντρο επιστρέφει τα ίδια Point με το να ελέγχονται ένα-ένα για το
+αν βρίσκονται εντός του range. Αυτή η ιδιότητα εγγυάται την ορθότητα και πληρότητα
+τον αποτελεσμάτων.
 
-Kathe idiotita elegxetai gia kathe typo dentrou me 100 tyxaia paragomena testcases.
+Κάθε ιδιότητα ελέγχεται για κάθε τύπο δέντρου με 100 τυχαία παραγόμενα testcases.
 
 LSH
 
-Ypologizetai to hash kathe lexis me 100 diaforetika noumera.
-Gia kathe noumero kai kathe eggrafo ypologizetai to elaxisto hash
-olon ton lexeon sto eggrafo. Etsi dimiourgitai to minhash matrix.
-Ana dio oi times se kathe stili tou minhash matrix enonontai 
-se ena hash. To apotelesma einai ypografes LSH me 50 bands kai 2 grammes
-ana band. Oi times 2 kai 50 vrethikan peiramatika na exoun apodexti
-apodosi gia jaccard similarity 20% se sigkrisi me alles times.
-Sto LSH xrisimopoiountai 10000 koubades.
+Υπολογίζεται το hash κάθε λέξης με 100 διαφορετικά νούμερα.
+Για κάθε νούμερο και κάθε έγγραφο υπολογίζεται το ελάχιστο hash
+όλον τον λέξεων στο έγγραφο. Έτσι δημιουργείται το minhash matrix.
+Ανά δυο οι τιμές σε κάθε στήλη του minhash matrix ενώνονται 
+σε ένα hash. Το αποτέλεσμα είναι υπογραφές LSH με 50 bands και 2 γραμμές
+ανά band. Οι τιμές 2 και 50 βρέθηκαν πειραματικά να έχουν αποδεκτή
+απόδοση για jaccard similarity 20% σε σύγκριση με άλλες τιμές.
+Στο LSH χρησιμοποιούνται 10000 κουβάδες.
 
-Gia kathe grammi sto matrix ton ypografon ton epistimonon pou epestrese
-i anazitisi sto dentro xrisimopoiitai hashmap gia na vrethoun oi stiles pou
-exoun koina band. Epistrefetai kathe zeygos pou brisketai me ayton ton tropo.
+Για κάθε γραμμή στο matrix τον υπογραφων τον επιστημόνων που "επεστρεσε"
+η αναζήτηση στο δέντρο χρησιμοποιείται hashmap για να βρεθούν οι στήλες που
+έχουν κοινά band. Επιστρέφεται κάθε ζεύγος που βρίσκεται με αυτόν τον τρόπο.
