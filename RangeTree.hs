@@ -1,14 +1,16 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_GHC -Wno-deferred-out-of-scope-variables #-}
+{-# LANGUAGE DeriveGeneric #-}
 module RangeTree (TwoTree (..),makeRange,rangeRange) where
 import Kdtree
 import Data.List (nub,partition)
 import Debug.Trace (traceShow, trace)
+import GHC.Generics
 
 data TwoTree =
     Tnempty | Tleaf { tn :: Point, tdata :: [Point], tside :: TwoTree} |
     Tnode { tn :: Point, tside :: TwoTree, tless :: TwoTree,
-        tmore :: TwoTree} deriving (Eq,Show)
+        tmore :: TwoTree} deriving (Eq,Show,Generic)
 
 rangeRange :: Point -> Point -> TwoTree -> [Point]
 rangeRange low high = rangeTwo low high Idk

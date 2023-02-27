@@ -31,14 +31,14 @@ executable Demo
 
 executable Prof
     main-is: Profil.hs
-    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree
+    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, Aesoning, Muhtr
     build-depends:    
-        base , containers, QuickCheck, data-hash, split, deepseq, unordered-containers, criterion
+        base , containers, QuickCheck, data-hash, split, deepseq, unordered-containers, criterion, aeson
     ghc-options: -O2 -threaded "-with-rtsopts=-N"
     default-language: Haskell2010
 
 library
-    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree
+    other-modules: Kdtree, KdTest, Quad, RangeTree, RTree, Aesoning
     build-depends:    
         base , containers, QuickCheck, data-hash, split, deepseq, unordered-containers, criterion
     ghc-options: -O2 -threaded "-with-rtsopts=-N"

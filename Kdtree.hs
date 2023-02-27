@@ -1,9 +1,11 @@
 {-# LANGUAGE LexicalNegation #-}
+{-# LANGUAGE DeriveGeneric #-}
 module Kdtree  where
 import Data.List (sortOn, sort, partition)
 import Control.Arrow (Arrow((&&&)), (>>>))
+import GHC.Generics
 
-data Kd = Kempty | Kleaf Point | Kd Point Kd Kd deriving (Eq, Show)
+data Kd = Kempty | Kleaf Point | Kd Point Kd Kd deriving (Eq, Show,Generic)
 
 data Point = Pointx {x :: Double, y :: Double, stuff :: [Int]} | Pointy {x :: Double, y :: Double, stuff :: [Int]} deriving (Eq, Show)
 

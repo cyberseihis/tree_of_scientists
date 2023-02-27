@@ -1,4 +1,5 @@
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE DeriveGeneric #-}
 module Quad where
 import Kdtree
 import Data.List.NonEmpty (groupAllWith, toList)
@@ -10,11 +11,12 @@ import Data.Ord (comparing)
 import Data.Foldable (maximumBy)
 import Data.List (nub, sortOn, sort)
 import Data.Maybe (mapMaybe)
+import GHC.Generics
 
 data Qtree =
     Qempty | Qleaf Point |
     Qtree {m::Point,ne::Qtree,se::Qtree,sw::Qtree,nw::Qtree}
-    deriving (Eq,Show)
+    deriving (Eq,Show,Generic)
 
 bls = (,) <$> [False,True] <*> [False,True]
 fielt = zip bls [ne,nw,se,sw]

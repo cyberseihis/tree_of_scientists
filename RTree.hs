@@ -1,11 +1,13 @@
+{-# LANGUAGE DeriveGeneric #-}
 module RTree where
 import Kdtree
 import Control.Arrow (Arrow((&&&), second))
 import Data.List (nub, sortOn, singleton)
 import Data.List.Split (splitPlaces)
+import GHC.Generics
 
-data Mbr = Mbr {sx::Double,sy::Double,mx::Double,my::Double} deriving (Eq,Show)
-data RTree = Rempty | Rleaf Point | Rnode Mbr [RTree] deriving (Eq,Show)
+data Mbr = Mbr {sx::Double,sy::Double,mx::Double,my::Double} deriving (Eq,Show,Generic)
+data RTree = Rempty | Rleaf Point | Rnode Mbr [RTree] deriving (Eq,Show,Generic)
 
 doubleMbr :: Point -> Point -> Mbr
 doubleMbr (Pointx sx sy _) (Pointx mx my _) = Mbr sx sy mx my
